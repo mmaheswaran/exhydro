@@ -35,9 +35,7 @@ _You **can** combine them_
 
 ## Images
 
-<img src="https://github.com/mmaheswaran/exhydro/images/mindmap.png" align="right"
-     alt="Mind map of code structure" width="120" height="178">
-![This is a alt text.](/image/sample.png "This is a sample image.")
+![This is a alt text.](/images/mindmap.png "Code structure and plan.")
 
 ## Links
 
