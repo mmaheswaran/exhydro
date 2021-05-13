@@ -4,7 +4,7 @@
  * Class to manage the nodal velocity arrays in the simulation.
  *
  *  Created on: 3 Apr 2021
- *      Author: maryann
+ *      Author: Mary-Ann Maheswaran
  */
 
 #include "PhysicalProperty.h"

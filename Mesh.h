@@ -5,7 +5,7 @@
  * NOTE: Node numbering should correspond to isoparametric space numbering
  *
  *  Created on: 16 Apr 2021
- *      Author: maryann
+ *      Author: Mary-Ann Maheswaran
  */
 
 #include <vector>

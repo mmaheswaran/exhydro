@@ -5,7 +5,7 @@
  *
  * Abstract class for physical properties.
  *  Created on: 29 Mar 2021
- *      Author: maryann
+ *      Author: Mary-Ann Maheswaran
  */
 
 #include <vector>

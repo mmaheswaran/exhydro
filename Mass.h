@@ -4,7 +4,7 @@
  * Class to manage the mass arrays in the simulation.
  *
  *  Created on: 24 Mar 2021
- *      Author: maryann
+ *      Author: Mary-Ann Maheswaran
  */
 #include "PhysicalProperty.h"
 

@@ -4,7 +4,7 @@
  * Class to manage the acceleration arrays in the simulation.
  *
  *  Created on: 10 Apr 2021
- *      Author: maryann
+ *      Author: Mary-Ann Maheswaran
  */
 #include "PhysicalProperty.h"
 

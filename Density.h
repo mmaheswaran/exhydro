@@ -4,7 +4,7 @@
  * Class to manage the density arrays in the simulation.
  *
  *  Created on: 30 Mar 2021
- *      Author: maryann
+ *      Author: Mary-Ann Maheswaran
  */
 
 #include "PhysicalProperty.h"

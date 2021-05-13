@@ -3,7 +3,7 @@
  *
  * Manages the finite element, isoparametric terms.
  *  Created on: 26 Apr 2021
- *      Author: maryann
+ *      Author: Mary-Ann Maheswaran
  */
 #include <vector>
 using namespace std;
