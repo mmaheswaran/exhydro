@@ -49,7 +49,7 @@ void init1DSod(Mesh &mesh,
 	ccs2.init(nel,0.0);
 
 	double dx = tubeLength / nel;
-    int el = 0;
+	int el = 0;
 	for(int n=0; n < nnod-1; n++) {
 		double xpos1 = n*dx;
 		double xpos2 = (n+1)*dx;

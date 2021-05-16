@@ -22,21 +22,24 @@ public:
 	int numberNodes;						//number of nodes in simulation
 	int numberElements; 					//number of elements in simulation
 	int DIMS;								//number of spatial dimensions
+	int noVertices;
 
 	vector<vector<double> > el2nodemap; 	//map element number to node number
+	vector<vector<double> > elneighmap; 	//map element number to node number
 
 	double nodePositions(int index) {return _nodePositions[index];} //get
 	double region(int index) {return _region[index];}
 
 	void nodePositions(const int node, const int dim, const double value); //set
-    void region(const int node, const int dim, const double value);
+	void region(const int node, const int dim, const double value);
 
 	void printNodePos();					//printNodePos node positions
 	double getVolume(int element);			//get volume of an element
 
-	void addRegion(int noElements, double extent, double origin, int regionNumber); 		  //1D
+	void addRegion(int noElements, double extent, double origin, int regionNumber);        //1D
 	void addRegion(int noElements[2], double extents[2], double origin[2], int regionNumber); //2D
 	void addRegion(int noElements[3], double extents[3], double origin[3], int regionNumber); //3D
+
 
 private:
 	vector<vector<double> > _nodePositions; //node positions
@@ -44,11 +47,22 @@ private:
 	Isoparametrics iso;
 };
 
-Mesh::Mesh(int dimensions) {
+Mesh::Mesh(int dimensions)
+{
 
 	DIMS = dimensions;
 	numberNodes = 0;
 	numberElements = 0;
+	noVertices = 0;
+	if(dimensions == 1) {
+	  	noVertices = 2;
+	}else if(dimensions == 2) {
+		noVertices = 4;
+	}else if(dimensions == 3) {
+		noVertices = 8;
+	}else {
+		throw "Unacceptable number of dimensions in Mesh constructor, choose 1, 2 or 3.";
+	}
 }
 
 void Mesh::nodePositions(const int node, const int dim, const double value) {
@@ -59,7 +73,8 @@ void Mesh::region(const int node, const int dim, const double value) {
 	_region[node][dim] = value;
 }
 
-void Mesh::printNodePos() {
+void Mesh::printNodePos()
+{
 
 	for (const auto& inner : _nodePositions) {
 	  for (const auto& item : inner) {
@@ -82,10 +97,11 @@ double Mesh:getVolume(int element) {
  * @param extents physical size of region
  * @param origin of region
  */
-void Mesh::addRegion(int noElements, double extent, double origin, int regionNumber) {
+void Mesh::addRegion(int noElements, double extent, double origin, int regionNumber)
+{
 
 	double dx = extent/noElements; //spacing
-	for(int i = numberNodes; i < numberNodes + noElements; i++) {
+	for(int i = 0; i < noElements; i++) {
 		_nodePositions[numberNodes].push_back(i*dx + origin);
 		_region.push_back(regionNumber);
 		el2nodemap[noElements][0] = i;
@@ -100,29 +116,113 @@ void Mesh::addRegion(int noElements, double extent, double origin, int regionNum
 /**
  * 2D overloaded implementation of add a region to the mesh
  */
-void Mesh::addRegion(int noElements[2], double extents[2], double origin[2], int regionNumber) {
+void Mesh::addRegion(int noElements[2], double extents[2], double origin[2], int regionNumber)
+{
 
-	double dx = extents[0]/noElements[0]; //spacing
-	double dy = extents[1]/noElements[1]; //spacing
-	for(int i = numberNodes; i < numberNodes + noElements; i++) {
-		_nodePositions[numberNodes].push_back(i*dx + origin);
-		_region.push_back(regionNumber);
-		el2nodemap[noElements][0] = i;
-		el2nodemap[noElements][1] = i+1;
-		numberNodes++;
-		numberElements++;
+	double dx = extents[0]/noElements[0];
+	double dy = extents[1]/noElements[1];
+							//     (2)
+	double ox = origin[0];  //    3----2
+	double oy = origin[1];  //(3) |    | (1)
+                            //    0----1
+	                        //      (0)
+	//add 1st node left corner
+	vector<double> node0{ox,oy};
+	vector<double> node1{ox+dx,oy};
+	vector<double> node2{ox+dx,oy+dy};
+	vector<double> node3{ox,oy+dy};
+	_nodePositions[numberNodes].push_back(node1);
+	el2nodemap[numberElements][0] = numberNodes;
+	numberNodes++;
+	_nodePositions[numberNodes].push_back(node2);
+	el2nodemap[numberElements][1] = numberNodes;
+	numberNodes++;
+	_nodePositions[numberNodes].push_back(node3);
+	el2nodemap[numberElements][2] = numberNodes;
+	numberNodes++;
+	_nodePositions[numberNodes].push_back(node4);
+	el2nodemap[numberElements][3] = numberNodes;
+	numberNodes++;
+	int firstrowel = numberElements;
+
+	vector<int> neighbours{0,numberElements+1,numberElements+noElements[0],0};
+	elneighmap.push_back(neighbours);
+	numberElements++;
+
+	//first row
+	for(int i = 1; i < noElements[0]; i++) { //x-direction
+		 int eneigh = numberElements -1;
+		 int wneigh = numberElements +1;
+		 int nneigh = numberElements + noElements[0];
+		 //node 0
+		 int n0 = el2nodemap[eneigh][1];
+		 el2nodemap[numberElements][0] = n0;
+
+		 //node 1
+		 vector<double> node1{ox+dx*(i+1),oy    };
+		 _nodePositions[numberNodes].push_back(node1);
+		 el2nodemap[numberElements][1] = numberNodes;
+		 numberNodes++;
+
+		 //node 2
+		 vector<double> node2{ox+dx*(i+1),oy+dy};
+		 _nodePositions[numberNodes].push_back(node2);
+		 el2nodemap[numberElements][2] = numberNodes;
+		 numberNodes++;
+
+		 //node 3
+		 int n3 = el2nodemap[eneigh][2];
+		 el2nodemap[numberElements][3] = n3;
+
+		 vector<int> neighbours{eneigh,wneigh,nneigh,0};
+		 numberElements++;
 	}
-	if(noElements>0) _nodePositions[numberNodes].push_back(extent + origin);
+
+	for(int j = 0; j < noElements[1]; j++) { //y-direction
+	  for(int i = 0; i < noElements[0]; i++) { //x-direction
+		  vector<double> node0{ox+dx*i    ,oy+dy*j    };
+		  vector<double> node1{ox+dx*(i+1),oy+dy*j    };
+		  vector<double> node2{ox+dx*(i+1),oy+dy*(j+1)};
+		  vector<double> node3{ox+dx*i    ,oy+dy*(j+1)};
+		  int eneigh = numberElements +1;
+		  int wneigh = numberElements -1;
+		  int nneigh = numberElements + noElements[0];
+		  int sneigh = numberElements - noElements[0];
+		  if (j==0) { //first row
+			  sneigh = -1;
+		  }
+		  if (j==noElements[1]-1) {//last row
+			  nneigh = -1;
+		  }
+		  if (i==0) { //first column
+			  wneigh = -1;
+		  }
+		  if (i==noElements[0]-1) {//last column
+			  eneigh = -1;
+		  }
+		  vector<int> neighbours{sneigh,eneigh,nneigh,wneigh};
+		  elneighmap.push_back(neighbours);
+
+		  int n0 = numberNodes;
+		  int n1 = numberNodes+1;
+		  int n2 = numberNodes+2;
+		  int n3 = numberNodes+3;
+
+		  if((sneigh<0)&&(wneigh>=0)) {
+			  n0 = el2nodemap[wneigh][1];
+			  n3 = el2nodemap[wneigh][2];
+		  }else if((wneigh<0)&&(sneigh>=0)) {
+			  n1 = el2nodemap[sneigh][3];
+			  n2 = el2nodemap[sneigh][2];
+		  }else if() {
+		  }
+	  }
+	}
+
 
 
 }
 
-/**
- * 3D overloaded implementation of add a region to the mesh
- */
-void Mesh::addRegion(int noElements[3], double extents[3], double origin[3], int regionNumber) {
-
-}
 
 
 #endif /* MESH_H_ */
