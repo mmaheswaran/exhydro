@@ -121,73 +121,25 @@ void Mesh::addRegion(int noElements[2], double extents[2], double origin[2], int
 
 	double dx = extents[0]/noElements[0];
 	double dy = extents[1]/noElements[1];
-	                        //     (2)
-	double ox = origin[0];  //    3----2
-	double oy = origin[1];  //(3) |    | (1)
-	                        //    0----1
-	                        //      (0)
+	                        //      (2)N
+	double ox = origin[0];  //     3----2
+	double oy = origin[1];  //(3)W |    |(1)E
+	                        //     0----1
+	                        //     (0)S
 	//add 1st node left corner
-	vector<double> node0{ox,oy};
-	vector<double> node1{ox+dx,oy};
-	vector<double> node2{ox+dx,oy+dy};
-	vector<double> node3{ox,oy+dy};
-	_nodePositions[numberNodes].push_back(node1);
-	el2nodemap[numberElements][0] = numberNodes;
-	numberNodes++;
-	_nodePositions[numberNodes].push_back(node2);
-	el2nodemap[numberElements][1] = numberNodes;
-	numberNodes++;
-	_nodePositions[numberNodes].push_back(node3);
-	el2nodemap[numberElements][2] = numberNodes;
-	numberNodes++;
-	_nodePositions[numberNodes].push_back(node4);
-	el2nodemap[numberElements][3] = numberNodes;
-	numberNodes++;
-	int firstrowel = numberElements;
-
-	vector<int> neighbours{0,numberElements+1,numberElements+noElements[0],0};
-	elneighmap.push_back(neighbours);
-	numberElements++;
-
-	//first row
-	for(int i = 1; i < noElements[0]; i++) { //x-direction
-		 int eneigh = numberElements -1;
-		 int wneigh = numberElements +1;
-		 int nneigh = numberElements + noElements[0];
-		 //node 0
-		 int n0 = el2nodemap[eneigh][1];
-		 el2nodemap[numberElements][0] = n0;
-
-		 //node 1
-		 vector<double> node1{ox+dx*(i+1),oy    };
-		 _nodePositions[numberNodes].push_back(node1);
-		 el2nodemap[numberElements][1] = numberNodes;
-		 numberNodes++;
-
-		 //node 2
-		 vector<double> node2{ox+dx*(i+1),oy+dy};
-		 _nodePositions[numberNodes].push_back(node2);
-		 el2nodemap[numberElements][2] = numberNodes;
-		 numberNodes++;
-
-		 //node 3
-		 int n3 = el2nodemap[eneigh][2];
-		 el2nodemap[numberElements][3] = n3;
-
-		 vector<int> neighbours{eneigh,wneigh,nneigh,0};
-		 numberElements++;
-	}
-
 	for(int j = 0; j < noElements[1]; j++) { //y-direction
 	  for(int i = 0; i < noElements[0]; i++) { //x-direction
+		  //node positions
 		  vector<double> node0{ox+dx*i    ,oy+dy*j    };
 		  vector<double> node1{ox+dx*(i+1),oy+dy*j    };
 		  vector<double> node2{ox+dx*(i+1),oy+dy*(j+1)};
 		  vector<double> node3{ox+dx*i    ,oy+dy*(j+1)};
+		  //element numbers of neighbours
 		  int eneigh = numberElements +1;
 		  int wneigh = numberElements -1;
 		  int nneigh = numberElements + noElements[0];
 		  int sneigh = numberElements - noElements[0];
+		  //mark out non-existent neighbours of edge elements
 		  if (j==0) { //first row
 			  sneigh = -1;
 		  }
@@ -200,6 +152,7 @@ void Mesh::addRegion(int noElements[2], double extents[2], double origin[2], int
 		  if (i==noElements[0]-1) {//last column
 			  eneigh = -1;
 		  }
+		  //add to element-element connectivity array
 		  vector<int> neighbours{sneigh,eneigh,nneigh,wneigh};
 		  elneighmap.push_back(neighbours);
 
@@ -208,19 +161,28 @@ void Mesh::addRegion(int noElements[2], double extents[2], double origin[2], int
 		  int n2 = numberNodes+2;
 		  int n3 = numberNodes+3;
 
-		  if((sneigh<0)&&(wneigh>=0)) {
+		  //Assign element-node connectivity
+		  if((sneigh<0)&(wneigh<0)) {
+			  numberElements+=4;
+		  }else if((sneigh<0)&&(wneigh>=0)) {
 			  n0 = el2nodemap[wneigh][1];
 			  n3 = el2nodemap[wneigh][2];
+			  numberElements+=2;
 		  }else if((wneigh<0)&&(sneigh>=0)) {
 			  n1 = el2nodemap[sneigh][3];
 			  n2 = el2nodemap[sneigh][2];
-		  }else if() {
+			  numberElements+=2;
+		  }else if((sneigh>=0)&&(wneigh>=0)&&(eneigh>=0)) {
+			  n0 = el2nodemap[sneigh][3];
+			  n1 = el2nodemap[sneigh][2];
+			  n3 = el2nodemap[wneigh][2];
+			  numberElements++;
 		  }
+		  vector<int> neighbours{n0,n1,n2,n3};
+		  elneighmap.push_back(neighbours);
+		  numberElements++;
 	  }
 	}
-
-
-
 }
 
 
