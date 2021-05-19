@@ -8,20 +8,49 @@
 
 using namespace std;
 
+// Initialise physical properties for Sod shock tube
 void init1DSod(Mesh &mesh,
 			 Density &density,
 			 Energy &energy,
 			 Pressure &pressure,
-			 SoundSpeed2 &ccs2);
+			 SoundSpeed2 &ccs2)
+{
 
+	//add 2 regions
+	int meshsize [2] = {50,50};
+	double problemsize [2]= {50.0, 50.0};
+	double origin [2]= {0.0, 50.0};
+	mesh.addRegion(meshsize[0], problemsize[0], origin[0], 1);
+	mesh.addRegion(meshsize[1], problemsize[1], origin[1], 2);
+
+    int noElements = mesh.numberElements;
+
+    //initialise physical arrays
+    density.init(noElements,0.0);
+    energy.init(noElements,0.0);
+    pressure.init(noElements,0.0);
+	ccs2.init(noElements,0.0);
+
+	const vector<int> &regionInfo = mesh.getRegionData();
+	density.setRegion(regionInfo, 1, 1.0);
+	energy.setRegion(regionInfo, 1, 2.5);
+
+	density.setRegion(regionInfo, 2, 0.125);
+	energy.setRegion(regionInfo, 2, 2.0);
+
+	pressure.updatePressure(density.getData(), energy.getData());
+	ccs2.updateSoundSpeed(energy.getData());
+
+}
 
 int main(int argc, char **argv) {
 
+	int noDimensions = 2;
 	Density density;
 	Energy energy;
 	Pressure pressure;
 	SoundSpeed2 ccs2;
-	Mesh mesh(101,100,1);
+	Mesh mesh(noDimensions);
 	//mesh.printNodePos();
 
 	init1DSod(mesh,density,energy,pressure,ccs2);
@@ -32,39 +61,3 @@ int main(int argc, char **argv) {
 	return 0;
 }
 
-// Initialise physical properties for Sod shock tube
-void init1DSod(Mesh &mesh,
-			 Density &density,
-			 Energy &energy,
-			 Pressure &pressure,
-			 SoundSpeed2 &ccs2)
-{
-	double tubeLength = 100.0;
-	int nel = mesh.numberElements;
-	int nnod = mesh.numberNodes;
-	density.init(nel, 1.0);
-	energy.init(nel, 2.5);
-
-	pressure.init(nel,0.0);
-	ccs2.init(nel,0.0);
-
-	double dx = tubeLength / nel;
-	int el = 0;
-	for(int n=0; n < nnod-1; n++) {
-		double xpos1 = n*dx;
-		double xpos2 = (n+1)*dx;
-		double elx = (xpos1 + xpos2)*0.5;
-		mesh.nodePositions(n,0,xpos1);
-		if(elx >= 50.0) {
-			//Region 2
-			density.set(el, 0.125);
-			energy.set(el,2.0);
-			mesh.region[el] = 1;
-		}
-		el++;
-	}
-
-	pressure.updatePressure(density.getData(), energy.getData());
-	ccs2.updateSoundSpeed(energy.getData());
-
-}
