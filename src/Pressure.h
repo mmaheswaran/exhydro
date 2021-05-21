@@ -4,7 +4,7 @@
  * Manages the pressure objects and calls EOS
  *
  *  Created on: 7 Apr 2021
- *      Author: maryann
+ *      Author: Mary-Ann Maheswaran
  */
 
 

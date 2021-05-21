@@ -3,7 +3,7 @@
  *
  * Manages the finite element, isoparametric terms.
  *  Created on: 26 Apr 2021
- *      Author: maryann
+ *      Author: Mary-Ann Maheswaran
  */
 #include <vector>
 using namespace std;
@@ -15,10 +15,10 @@ class Isoparametrics {
 
 public:
 
-	double getPos(vector &nodesPos, double xi);
-	double getPos(vector &nodesPos, double xi, double eta);
-	double getPos(vector &nodesPos, double xi, double eta, double zeta);
-	vector<double> getJacobian(vector &nodesPos, double xi, double eta);
+	double getPos(vector<double> &nodesPos, double xi);
+	double getPos(vector<double> &nodesPos, double xi, double eta);
+	double getPos(vector<double> &nodesPos, double xi, double eta, double zeta);
+	//vector<double> getJacobian(vector<double> &nodesPos, double xi, double eta);
 
 private:
 
@@ -26,7 +26,7 @@ private:
 
 
 // 1D bi-linear
-double Isoparametrics::getPos(vector &nodesPos, double xi) {
+double Isoparametrics::getPos(vector<double> &nodesPos, double xi) {
 
 	double pos = nodesPos[0]*(1-xi);
 	pos += nodesPos[1]*(1+xi);
@@ -35,7 +35,7 @@ double Isoparametrics::getPos(vector &nodesPos, double xi) {
 }
 
 // 2D bi-linear
-double Isoparametrics::getPos(vector &nodesPos, double xi, double eta) {
+double Isoparametrics::getPos(vector<double> &nodesPos, double xi, double eta) {
 
 	double pos = nodesPos[0]*(1-xi)*(1-eta);
 	pos += nodesPos[1]*(1+xi)*(1-eta);
@@ -46,7 +46,7 @@ double Isoparametrics::getPos(vector &nodesPos, double xi, double eta) {
 }
 
 // 3D bi-linear
-double Isoparametrics::getPos(vector &nodesPos, double xi, double eta, double theta) {
+double Isoparametrics::getPos(vector<double> &nodesPos, double xi, double eta, double theta) {
 
 	double pos = nodesPos[0]*(1-xi)*(1-eta)*(1-theta);
 	pos += nodesPos[1]*(1+xi)*(1-eta)*(1-theta);

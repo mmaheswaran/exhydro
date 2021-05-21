@@ -5,7 +5,7 @@
  *
  * Abstract class for physical properties.
  *  Created on: 29 Mar 2021
- *      Author: maryann
+ *      Author: Mary-Ann Maheswaran
  */
 
 #include <vector>
@@ -20,6 +20,7 @@ public:
 
 	virtual ~PhysicalProperty() {}
 	void init(int size, double initValue);
+	void setRegion(vector<int> regionInfo, int region,double initValue);
 	virtual void print() = 0;
 	double get(int index);
 	const vector<double>& getData() const { return data; }
@@ -43,6 +44,15 @@ protected:
 void PhysicalProperty::init(int size, double initValue) {
 
 	data.resize(size, initValue);
+}
+
+void PhysicalProperty::setRegion(vector<int> regionInfo, int region,double initValue) {
+
+	for (int i= 0; i < data.size(); i++) {
+		if (regionInfo[i] == region) {
+			data[i] = initValue;
+		}
+	}
 }
 
 /**

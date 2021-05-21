@@ -4,7 +4,7 @@
  * Manages the sound speed objects and calls EOS
  *
  *  Created on: 10 Apr 2021
- *      Author: maryann
+ *      Author: Mary-Ann Maheswaran
  */
 
 #include "PhysicalProperty.h"

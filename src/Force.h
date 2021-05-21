@@ -4,7 +4,7 @@
  * Class to manage the A. Barlow's compatible hydro force array.
  *
  *  Created on: 12 Apr 2021
- *      Author: maryann
+ *      Author: Mary-Ann Maheswaran
  */
 #include "PhysicalProperty.h"
 

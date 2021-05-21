@@ -2,7 +2,7 @@
  * Energy.h
  *
  *  Created on: 13 Apr 2021
- *      Author: maryann
+ *      Author: Mary-Ann Maheswaran
  */
 
 #include "PhysicalProperty.h"

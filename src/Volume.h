@@ -2,7 +2,7 @@
  * Volume.h
  *
  *  Created on: 3 Apr 2021
- *      Author: maryann
+ *      Author: Mary-Ann Maheswaran
  */
 
 #include <cassert>
