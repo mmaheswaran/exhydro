@@ -20,10 +20,12 @@ public:
 
 	virtual ~PhysicalProperty() {}
 	void init(int size, double initValue);
+
 	void setRegion(vector<int> regionInfo, int region,double initValue);
+	const vector<double>& getData() const { return data; }
+
 	virtual void print() = 0;
 	double get(int index);
-	const vector<double>& getData() const { return data; }
 	void set(int index, double value);
 	void setData(vector<double> values);
 	void add(vector<double> values);
