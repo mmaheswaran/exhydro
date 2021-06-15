@@ -20,6 +20,9 @@ public:
 	double getPos(vector<double> &nodesPos, double xi, double eta, double zeta);
 	//vector<double> getJacobian(vector<double> &nodesPos, double xi, double eta);
 
+	double detJ(double* x, double* y, double xi, double eta);
+	double* Jacobian(double* x, double* y, double xi, double eta);
+
 private:
 
 };
@@ -59,6 +62,42 @@ double Isoparametrics::getPos(vector<double> &nodesPos, double xi, double eta, d
 
 	return 0.125*pos;
 }
+
+/**
+ * Calculate Jacobian using shape functions.
+ * |J[0] J[1]| = |dx/dxi   dy/dxi |
+ * |J[2] J[3]|   |dx/deta  dy/deta|
+ * @param x positions of element vertices
+ * @param y positions of element vertices
+ * @param xi normal space position
+ * @param eta normal space position
+ */
+double* Isoparametrics::Jacobian(double* x, double* y, double xi, double eta) {
+
+	double J[4];
+
+	J[0] = 0.25*(-x[0]+x[1]+x[2]-x[3]) + 0.25*eta*(x[0]-x[1]+x[2]-x[3]);
+	J[1] = 0.25*(-x[0]-x[1]+x[2]+x[3]) + 0.25* xi*(x[0]-x[1]+x[2]-x[3]);
+	J[2] = 0.25*(-y[0]+y[1]+y[2]-y[3]) + 0.25*eta*(y[0]-y[1]+y[2]-y[3]);
+	J[3] = 0.25*(-y[0]-y[1]+y[2]+y[3]) + 0.25* xi*(y[0]-y[1]+y[2]-y[3]);
+
+	return J;
+}
+
+/**
+ * Return determinant of Jacobian.
+ * @param x positions of element vertices
+ * @param y positions of element vertices
+ * @param xi normal space position
+ * @param eta normal space position
+ */
+double Isoparametrics::detJ(double* x, double* y, double xi, double eta) {
+
+	double *J = Jacobian(x,y,xi,eta);
+	return J[0]*J[3] - J[1]*J[2];
+
+}
+
 
 
 

@@ -41,6 +41,8 @@ public:
 	void addRegion(int noElements[2], double extents[2], double origin[2], int regionNumber); //2D
 	//void addRegion(int noElements[3], double extents[3], double origin[3], int regionNumber); //3D
 
+	double getElementArea(int index);
+
 
 private:
 	vector<vector<double> > _nodePositions; //node positions
@@ -87,9 +89,25 @@ void Mesh::printNodePos()
 	cout << endl;
 }
 
-/*double Mesh:getVolume(int element) {
+/**
+ * Finite element implementation returning area of element.
+ * @param element number
+ */
+double Mesh::getElementArea(int element) {
 
-}*/
+	vector<int> nodes = el2nodemap[element];
+	double x[4];
+	double y[4];
+	int vertices = 4;
+	for(int v = 0; v < vertices; v++) {
+		int n = nodes[v];
+		x[v] = _nodePositions[n][0];
+		y[v] = _nodePositions[n][1];
+	}
+	double detJ = iso.detJ(x, y, 0.0, 0.0);
+	return 4*detJ;
+
+}
 
 /**
  * 1D overloaded implementation of add a region to the mesh.
