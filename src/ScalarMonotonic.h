@@ -36,9 +36,9 @@ ScalarMonotonic::ScalarMonotonic(double quadCoeff, double linearCoeff) {
 
 void ScalarMonotonic::calculate(Mesh        &mesh,
                                 Velocity    &velx,
-								Velocity    &vely,
-								SoundSpeed2 &csqrd,
-								Density     &density)
+                                Velocity    &vely,
+                                SoundSpeed2 &csqrd,
+                                Density     &density)
 {
 
 	int noElements = mesh.numberElements;
