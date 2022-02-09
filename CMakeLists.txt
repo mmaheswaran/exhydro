@@ -10,4 +10,8 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 include_directories(${PROJECT_SOURCE_DIR}/include)
 
 #add_executable(exhydro exhydro.cpp Mesh.cpp ScalarMonotonic.cpp PredictorCorrector.cpp)
+
+add_subdirectory(src)
 add_executable(exhydro ${PROJECT_SOURCE_DIR}/src/exhydro.cpp)
+
+target_link_libraries(exhydro PRIVATE libexo)

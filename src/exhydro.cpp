@@ -111,7 +111,7 @@ int main(int argc, char **argv) {
   //SoundSpeed2 ccs2;
 
 
-  Mesh mesh(20);
+  //Mesh mesh(20);
   //mesh.printNodePos();
 
 
