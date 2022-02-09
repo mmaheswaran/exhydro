@@ -1,10 +1,11 @@
-cmake_minimum_required (VERSION 3.0)
 
-project (exhydro)
+set(EXO_SRC
+	Mesh.cpp
+	PredictorCorrector.cpp
+	ScalarMonotonic.cpp
+   )
 
-# Use C++11
-set(CMAKE_CXX_STANDARD 11)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_EXTENSIONS OFF)
+add_library(libexo STATIC ${EXO_SRC})
+set_target_properties(libexo PROPERTIES OUTPUT_NAME exo)
+target_include_directories(libexo PUBLIC ${PROJECT_SOURCE_DIR}/include)
 
-add_executable(exhydro exhydro.cpp)
