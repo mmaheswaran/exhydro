@@ -2,7 +2,8 @@
 set(EXO_SRC
 	Mesh.cpp
 	PredictorCorrector.cpp
-	ScalarMonotonic.cpp
+	#ScalarMonotonic.cpp
+        Isoparametrics.cpp
    )
 
 add_library(libexo STATIC ${EXO_SRC})
