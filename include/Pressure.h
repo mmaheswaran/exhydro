@@ -32,7 +32,7 @@ void Pressure::updatePressure(const vector<double> &density, const vector<double
 
 
 	for (int i= 0; i < data.size(); i++) {
-		data[i] = density[i] * energy[i] * (1.4 - 1); //random thing need getEOS call
+		data[i] = density[i] * energy[i] * (1.4 - 1); //random ideal EOS, need getEOS call
 	}
 }
 

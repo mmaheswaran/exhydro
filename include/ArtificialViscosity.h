@@ -23,7 +23,7 @@ public:
 	int size();
 	void print();
 
-private:
+protected:
 	vector<double> artificialVisc;
 
 
