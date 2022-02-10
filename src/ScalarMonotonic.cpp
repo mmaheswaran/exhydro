@@ -3,7 +3,7 @@
 #include "ScalarMonotonic.h"
 #include "Density.h"
 #include <vector>
-
+#include <algorithm>
 
 ScalarMonotonic::ScalarMonotonic(double quadCoeff, double linearCoeff) {
   cquad = quadCoeff;
@@ -81,7 +81,7 @@ void ScalarMonotonic::calculate(Mesh   &mesh,
       double cond1 = 0.5*(Lratio+Rratio);
       double cond2 = 2*Lratio;
       double cond3 = 2*Rratio;
-      auto minval = std::min({cond1,cond2,cond3,1.0});
+      auto minval = std::min( {cond1, cond2, cond3, 1.0} );
       double phi = std::max( 0.0, minval );
 
 
