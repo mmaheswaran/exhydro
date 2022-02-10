@@ -1,4 +1,12 @@
 #include <iostream>
+<<<<<<< HEAD
+#include "PhysicalProperty.h"
+#include "Density.h"
+#include "Energy.h"
+#include "Pressure.h"
+#include "SoundSpeed2.h"
+#include "Mesh.h"
+=======
 //#include "PhysicalProperty.h"
 //#include "Density.h"
 //#include "Energy.h"
@@ -7,11 +15,16 @@
 #include "Mesh.h"
 #include <fstream> // for file-access
 #include <string>
+>>>>>>> develop
 
 using namespace std;
 
 // Initialise physical properties for Sod shock tube
+<<<<<<< HEAD
+void init1DSod(Mesh &mesh,
+=======
 /*void init1DSod(Mesh &mesh,
+>>>>>>> develop
 			 Density &density,
 			 Energy &energy,
 			 Pressure &pressure,
@@ -43,6 +56,26 @@ using namespace std;
 	pressure.updatePressure(density.getData(), energy.getData());
 	ccs2.updateSoundSpeed(energy.getData());
 
+<<<<<<< HEAD
+}
+
+int main(int argc, char **argv) {
+
+	int noDimensions = 2;
+	Density density;
+	Energy energy;
+	Pressure pressure;
+	SoundSpeed2 ccs2;
+	Mesh mesh(noDimensions);
+	//mesh.printNodePos();
+
+	init1DSod(mesh,density,energy,pressure,ccs2);
+
+	pressure.print();
+	ccs2.print();
+
+	return 0;
+=======
 }*/
 
 //read input file to get problem specifications
@@ -111,7 +144,7 @@ int main(int argc, char **argv) {
   //SoundSpeed2 ccs2;
 
 
-  Mesh mesh(20);
+  //Mesh mesh(20);
   //mesh.printNodePos();
 
 
@@ -121,5 +154,6 @@ int main(int argc, char **argv) {
   //ccs2.print();
 
   return 0;
+>>>>>>> develop
 }
 
