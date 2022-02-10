@@ -20,14 +20,10 @@ public:
 
 	virtual ~PhysicalProperty() {}
 	void init(int size, double initValue);
-<<<<<<< HEAD:src/PhysicalProperty.h
-	void setRegion(vector<int> regionInfo, int region,double initValue);
-=======
 
 	void setRegion(vector<int> regionInfo, int region,double initValue);
 	const vector<double>& getData() const { return data; }
 
->>>>>>> develop:include/PhysicalProperty.h
 	virtual void print() = 0;
 	double get(int index);
 	void set(int index, double value);
