@@ -16,9 +16,14 @@ class Velocity : public PhysicalProperty {
 
 public:
 
+    Velocity();
 	void update(vector<double> &acceleration, double timestep);
 
 };
+
+Velocity::Velocity() {
+    name = "Volume";
+}
 
 /**
  * Update velocities using acceleration

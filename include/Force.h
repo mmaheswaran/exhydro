@@ -15,11 +15,16 @@ class Force : public PhysicalProperty {
 
 public:
 
+    Force();
 	void update(const vector<double> &pressure, const std::vector<double> &area,
 				int nvertices, const vector< vector<int> > &el2nodmap);
 	void print();
 
 };
+
+Force::Force() {
+    name = "Force";
+}
 
 /**
  * Updates the force using pressure and area.

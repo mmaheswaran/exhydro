@@ -1,6 +1,11 @@
 #include "Isoparametrics.h"
 
-// 1D bi-linear
+// 1D bi-linear 
+/**
+ * Get real space coordinate from normal space in 1D.
+ * @param nodesPos position of nodes in the element
+ * @param
+ */
 double Isoparametrics::getPos(vector<double> &nodesPos, double xi) {
 
   double pos = nodesPos[0]*(1-xi);

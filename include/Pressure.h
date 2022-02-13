@@ -19,11 +19,15 @@ class Pressure : public PhysicalProperty {
 
 public:
 
+    Pressure();
 	void updatePressure(const vector<double> &density, const vector<double> &energy);
 	void print();
 
 };
 
+Pressure::Pressure() {
+    name = "Pressure";
+}
 
 /**
  * EOS substitute for now

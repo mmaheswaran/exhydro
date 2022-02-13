@@ -15,10 +15,15 @@ class Mass : public PhysicalProperty {
 
 public:
 
+    Mass();
 	void update(vector<double> &density, vector<double> &volume);
 	void print();
 
 };
+
+Mass::Mass() {
+    name = "Mass";
+}
 
 /**
  * Updates the masses.

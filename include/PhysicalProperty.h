@@ -9,6 +9,7 @@
  */
 
 #include <vector>
+#include <string>
 using namespace std;
 
 #ifndef PHYSICALPROPERTY_H_
@@ -20,25 +21,28 @@ public:
 
 	virtual ~PhysicalProperty() {}
 	void init(int size, double initValue);
-<<<<<<< HEAD:src/PhysicalProperty.h
-	void setRegion(vector<int> regionInfo, int region,double initValue);
-=======
 
 	void setRegion(vector<int> regionInfo, int region,double initValue);
+
 	const vector<double>& getData() const { return data; }
+    void setData(vector<double> values);
 
->>>>>>> develop:include/PhysicalProperty.h
+    const string& getName() const {return name; }
+    void setName(string newName);
+
 	virtual void print() = 0;
+
 	double get(int index);
 	void set(int index, double value);
-	void setData(vector<double> values);
 	void add(vector<double> values);
 	void add(double value);
+
 	int size();
 
 protected:
 
 	vector<double> data;
+    string name;
 };
 
 
@@ -88,6 +92,15 @@ void PhysicalProperty::set(int index, double value) {
 void PhysicalProperty::setData(std::vector<double> values) {
 
 	data = values;
+}
+
+/**
+ * Set new name of physical property
+ * @param newName
+ */
+void PhysicalProperty::setName(string newName) {
+
+    name = newName;
 }
 
 /**

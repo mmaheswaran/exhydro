@@ -1,30 +1,20 @@
 #include <iostream>
-<<<<<<< HEAD
 #include "PhysicalProperty.h"
 #include "Density.h"
 #include "Energy.h"
 #include "Pressure.h"
 #include "SoundSpeed2.h"
 #include "Mesh.h"
-=======
-//#include "PhysicalProperty.h"
-//#include "Density.h"
-//#include "Energy.h"
-//#include "Pressure.h"
-//#include "SoundSpeed2.h"
-#include "Mesh.h"
 #include <fstream> // for file-access
 #include <string>
->>>>>>> develop
+#include <sstream>
+#include <queue>
+//#include <bits/stdc++.h>
 
 using namespace std;
 
 // Initialise physical properties for Sod shock tube
-<<<<<<< HEAD
-void init1DSod(Mesh &mesh,
-=======
 /*void init1DSod(Mesh &mesh,
->>>>>>> develop
 			 Density &density,
 			 Energy &energy,
 			 Pressure &pressure,
@@ -56,7 +46,6 @@ void init1DSod(Mesh &mesh,
 	pressure.updatePressure(density.getData(), energy.getData());
 	ccs2.updateSoundSpeed(energy.getData());
 
-<<<<<<< HEAD
 }
 
 int main(int argc, char **argv) {
@@ -75,26 +64,109 @@ int main(int argc, char **argv) {
 	ccs2.print();
 
 	return 0;
-=======
 }*/
 
-//read input file to get problem specifications
-void readInput(char *inputDeck) {
+/**
+ * Get settings in input deck, using a keyword.
+ * @param infile input deck
+ * @param keyword
+ * @return
+ */
+queue<string> getsettings(ifstream &infile, string keyword) {
 
-  ifstream infile(inputDeck); //open the file
+    infile.clear();
+    infile.seekg(0);
+    queue<string> settings;
 
-  if (infile.is_open() && infile.good()) {
-    std::cout << "File echo:\n";
-    string line = "";
-    while (getline(infile, line)){
-      std::cout << line << '\n';
+    string line, word;
+
+    while (getline(infile,line)) {
+
+        istringstream iss{line};
+
+        size_t found = line.find(keyword);
+        if (found != string::npos) {
+            iss >> word;
+            while (iss >> word) {
+              word.erase(std::remove(word.begin(), word.end(), ','), word.end());
+              settings.push(word);
+            }
+            break;
+        }
     }
 
-  } else {
-    std::cout << "Failed to open file..";
+    return settings;
+}
+
+void print_queue(std::queue<string> q)
+{
+  while (!q.empty())
+  {
+    cout << q.front() << " ";
+    q.pop();
   }
+  cout << endl;
+}
 
+//read input file to get problem specifications
+void readinput(char *inputdeck) {/*,
+               int nodims,
+               int meshtype,
+               int timesolver,
 
+               Mesh &mesh) {*/
+
+    ifstream infile (inputdeck); //open the file
+
+    if (infile.is_open () && infile.good ()) {
+
+        //Look for number of dimensions requested
+        queue<string> settings;
+        settings = getsettings(infile, "dimensions");
+        print_queue(settings);
+
+        //Look for mesh type
+        settings = getsettings(infile, "mesh_type");
+        print_queue(settings);
+
+        //Look for time solver
+        settings = getsettings(infile, "time_solver");
+        print_queue(settings);
+
+        //Look for the extent of each region in each dimension
+        settings = getsettings(infile, "reg_length_x");
+        print_queue(settings);
+        settings = getsettings(infile, "reg_length_y");
+        print_queue(settings);
+        settings = getsettings(infile, "reg_length_z");
+        print_queue(settings);
+
+        //Look for origin of each region
+        settings = getsettings(infile, "reg_origin_x");
+        print_queue(settings);
+        settings = getsettings(infile, "reg_origin_y");
+        print_queue(settings);
+        settings = getsettings(infile, "reg_origin_z");
+        print_queue(settings);
+
+        //Look for size of mesh in each region per dimension
+        settings = getsettings(infile, "reg_mesh_x");
+        print_queue(settings);
+        settings = getsettings(infile, "reg_mesh_y");
+        print_queue(settings);
+        settings = getsettings(infile, "reg_mesh_z");
+        print_queue(settings);
+
+        //Look for initialisation of regions' physical properties
+        settings = getsettings(infile, "init_reg_density");
+        print_queue(settings);
+        settings = getsettings(infile, "init_reg_energy");
+        print_queue(settings);
+        settings = getsettings(infile, "init_reg_pressure");
+        print_queue(settings);
+        settings = getsettings(infile, "init_reg_velocity");
+        print_queue(settings);
+    }
 }
 
 /**
@@ -110,50 +182,49 @@ void readInput(char *inputDeck) {
 
 int main(int argc, char **argv) {
 
-  //Problem specifications
-  int noDimensions = 2; //default 2D
-  /**
-   * mesh type flag can be either:
-   * finite element [1]
-   * finite difference [2]
-   */
-  int mesh_type = 1; //default finite element
-  /**
-   * time solver flag can be either:
-   * predictor-corrector [1]
-   * Runge-Kutta [2]
-   */
-  int time_solver = 1; //default predictor-corrector temporal solver
-  int noRegions = 1;
+    //Problem specifications
+    int nodimensions = 2; //default 2D
+    /**
+     * mesh type flag can be either:
+     * finite element [1]
+     * finite difference [2]
+     */
+    int meshtype = 1; //default finite element
+    /**
+     * time solver flag can be either:
+     * predictor-corrector [1]
+     * Runge-Kutta [2]
+     */
+    int timesolver = 1; //default predictor-corrector temporal solver
+    int noregions = 1;
+
+    //Setup physical properties
+    Density density;
+    Energy energy;
+    Pressure pressure;
+    SoundSpeed2 ccs2;
 
 
-  //read in input file
-  if (argc > 1) {
-    std::cout << "input deck = " << argv[1] << endl;
-  } else {
-    std::cout << "No input file provided. Exiting...";
-    return -1;
-  }
+    //read in input file
+    if (argc > 1) {
+        cout << "input deck = " << argv[1] << endl;
+    } else {
+        cout << "No input file provided. Exiting...";
+        return -1;
+    }
 
-  readInput(argv[1]);
-
-  //Setup physical properties
-  //Density density;
-  //Energy energy;
-  //Pressure pressure;
-  //SoundSpeed2 ccs2;
+    readinput(argv[1]);
 
 
-  //Mesh mesh(20);
-  //mesh.printNodePos();
+    Mesh mesh(2);
+    //mesh.printNodePos();
 
 
-  //init1DSod(mesh,density,energy,pressure,ccs2);
+    //init1DSod(mesh,density,energy,pressure,ccs2);
 
-  //pressure.print();
-  //ccs2.print();
+    //pressure.print();
+    //ccs2.print();
 
-  return 0;
->>>>>>> develop
+    return 0;
 }
 

@@ -16,10 +16,15 @@ class Acceleration : public PhysicalProperty {
 
 public:
 
+    Acceleration();
 	void update(vector<double> &force,vector<double> &nodalmass, vector<double> &nodalarea, double densitycut);
 	void print();
 
 };
+
+Acceleration::Acceleration() {
+    name = "Acceleration";
+}
 
 /**
  * Updates the acceleration arrays.

@@ -14,6 +14,7 @@ class Energy : public PhysicalProperty {
 
 public:
 
+    Energy();
 	void update(vector<double> &force,
 				vector<double> &velocity,
 				vector<double> &mass,
@@ -24,6 +25,10 @@ public:
 	void print();
 
 };
+
+Energy::Energy() {
+    name  = "Energy";
+}
 
 /**
  * Updates the energy using compatible hydro scheme.

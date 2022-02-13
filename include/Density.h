@@ -16,11 +16,15 @@ class Density : public PhysicalProperty {
 
 public:
 
+    Density();
 	void update(vector<double> &mass, vector<double> &volume);
 	void print();
 
 };
 
+Density::Density() {
+    name = "Density";
+}
 
 /**
  * Updates the masses.

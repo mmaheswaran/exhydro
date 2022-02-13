@@ -15,11 +15,16 @@ class Volume : public PhysicalProperty{
 
 public:
 
+    Volume();
 	void update(Mesh &mesh);
 private:
 	vector<double> data;
 
 };
+
+Volume::Volume() {
+    name = "Volume";
+}
 
 /**
  * Updates the volume mesh terms.
