@@ -9,12 +9,14 @@
 #include <string>
 #include <sstream>
 #include <queue>
+#include <map>
+
 //#include <bits/stdc++.h>
 
 using namespace std;
 
 // Initialise physical properties for Sod shock tube
-/*void init1DSod(Mesh &mesh,
+void init2DSod(Mesh &mesh,
 			 Density &density,
 			 Energy &energy,
 			 Pressure &pressure,
@@ -22,11 +24,18 @@ using namespace std;
 {
 
 	//add 2 regions
-	int meshsize [2] = {50,50};
-	double problemsize [2]= {50.0, 50.0};
-	double origin [2]= {0.0, 50.0};
-	mesh.addRegion(meshsize[0], problemsize[0], origin[0], 1);
-	mesh.addRegion(meshsize[1], problemsize[1], origin[1], 2);
+    double reg1_length [2] = { 50.0, 1.0 };
+    double reg2_length [2] = { 50.0, 1.0 };
+
+    double reg1_origins [2] = {  0.0, 0.0 };
+    double reg2_origins [2] = { 50.0, 0.0 };
+
+	int reg1_mesh_size [2] = { 50, 1 };
+	int reg2_mesh_size [2] = { 50, 1 };
+
+
+	mesh.addRegion(reg1_mesh_size, reg1_length, reg1_origins, 1);
+	mesh.addRegion(reg2_mesh_size, reg2_length, reg2_origins, 2);
 
     int noElements = mesh.numberElements;
 
@@ -35,6 +44,7 @@ using namespace std;
     energy.init(noElements,0.0);
     pressure.init(noElements,0.0);
 	ccs2.init(noElements,0.0);
+
 
 	const vector<int> &regionInfo = mesh.getRegionData();
 	density.setRegion(regionInfo, 1, 1.0);
@@ -46,128 +56,10 @@ using namespace std;
 	pressure.updatePressure(density.getData(), energy.getData());
 	ccs2.updateSoundSpeed(energy.getData());
 
+
 }
 
-int main(int argc, char **argv) {
 
-	int noDimensions = 2;
-	Density density;
-	Energy energy;
-	Pressure pressure;
-	SoundSpeed2 ccs2;
-	Mesh mesh(noDimensions);
-	//mesh.printNodePos();
-
-	init1DSod(mesh,density,energy,pressure,ccs2);
-
-	pressure.print();
-	ccs2.print();
-
-	return 0;
-}*/
-
-/**
- * Get settings in input deck, using a keyword.
- * @param infile input deck
- * @param keyword
- * @return
- */
-queue<string> getsettings(ifstream &infile, string keyword) {
-
-    infile.clear();
-    infile.seekg(0);
-    queue<string> settings;
-
-    string line, word;
-
-    while (getline(infile,line)) {
-
-        istringstream iss{line};
-
-        size_t found = line.find(keyword);
-        if (found != string::npos) {
-            iss >> word;
-            while (iss >> word) {
-              word.erase(std::remove(word.begin(), word.end(), ','), word.end());
-              settings.push(word);
-            }
-            break;
-        }
-    }
-
-    return settings;
-}
-
-void print_queue(std::queue<string> q)
-{
-  while (!q.empty())
-  {
-    cout << q.front() << " ";
-    q.pop();
-  }
-  cout << endl;
-}
-
-//read input file to get problem specifications
-void readinput(char *inputdeck) {/*,
-               int nodims,
-               int meshtype,
-               int timesolver,
-
-               Mesh &mesh) {*/
-
-    ifstream infile (inputdeck); //open the file
-
-    if (infile.is_open () && infile.good ()) {
-
-        //Look for number of dimensions requested
-        queue<string> settings;
-        settings = getsettings(infile, "dimensions");
-        print_queue(settings);
-
-        //Look for mesh type
-        settings = getsettings(infile, "mesh_type");
-        print_queue(settings);
-
-        //Look for time solver
-        settings = getsettings(infile, "time_solver");
-        print_queue(settings);
-
-        //Look for the extent of each region in each dimension
-        settings = getsettings(infile, "reg_length_x");
-        print_queue(settings);
-        settings = getsettings(infile, "reg_length_y");
-        print_queue(settings);
-        settings = getsettings(infile, "reg_length_z");
-        print_queue(settings);
-
-        //Look for origin of each region
-        settings = getsettings(infile, "reg_origin_x");
-        print_queue(settings);
-        settings = getsettings(infile, "reg_origin_y");
-        print_queue(settings);
-        settings = getsettings(infile, "reg_origin_z");
-        print_queue(settings);
-
-        //Look for size of mesh in each region per dimension
-        settings = getsettings(infile, "reg_mesh_x");
-        print_queue(settings);
-        settings = getsettings(infile, "reg_mesh_y");
-        print_queue(settings);
-        settings = getsettings(infile, "reg_mesh_z");
-        print_queue(settings);
-
-        //Look for initialisation of regions' physical properties
-        settings = getsettings(infile, "init_reg_density");
-        print_queue(settings);
-        settings = getsettings(infile, "init_reg_energy");
-        print_queue(settings);
-        settings = getsettings(infile, "init_reg_pressure");
-        print_queue(settings);
-        settings = getsettings(infile, "init_reg_velocity");
-        print_queue(settings);
-    }
-}
 
 /**
  * mesh size specification for each region
@@ -213,17 +105,15 @@ int main(int argc, char **argv) {
         return -1;
     }
 
-    readinput(argv[1]);
 
 
-    Mesh mesh(2);
-    //mesh.printNodePos();
+    Mesh mesh(nodimensions);
 
 
-    //init1DSod(mesh,density,energy,pressure,ccs2);
+    init2DSod(mesh,density,energy,pressure,ccs2);
 
-    //pressure.print();
-    //ccs2.print();
+    pressure.print();
+    ccs2.print();
 
     return 0;
 }

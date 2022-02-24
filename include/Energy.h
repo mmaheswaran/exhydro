@@ -67,7 +67,7 @@ void Energy::update(vector<double> &force,
 void Energy::print() {
 
    vector<double>::iterator it;
-   cout << "Energy: ";
+   cout << "Energy:\n";
    for (it = data.begin(); it != data.end(); ++it) {
        cout<<*it<<" ";
    }

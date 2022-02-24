@@ -47,7 +47,7 @@ void Pressure::updatePressure(const vector<double> &density, const vector<double
 void Pressure::print() {
 
    vector<double>::iterator it;
-   cout << "Pressure: ";
+   cout << "Pressure:\n";
    for (it = data.begin(); it != data.end(); ++it) {
        cout<<*it<<" ";
    }

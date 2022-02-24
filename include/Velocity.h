@@ -18,11 +18,12 @@ public:
 
     Velocity();
 	void update(vector<double> &acceleration, double timestep);
+	void print();
 
 };
 
 Velocity::Velocity() {
-    name = "Volume";
+    name = "Velocity";
 }
 
 /**
@@ -39,6 +40,21 @@ void Velocity::update(vector<double> &acceleration, double timestep) {
 	}
 }
 
+
+/**
+ * Print the contents of array.
+ *
+ */
+void Velocity::print() {
+
+  vector<double>::iterator it;
+  std::cout << "Nodal velocity:\n";
+  for (it = data.begin(); it != data.end(); ++it) {
+    std::cout<<*it<<" ";
+  }
+  std::cout << "\n";
+
+}
 
 
 

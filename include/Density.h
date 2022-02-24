@@ -46,7 +46,7 @@ void Density::update(vector<double> &mass, vector<double> &volume) {
 void Density::print() {
 
    vector<double>::iterator it;
-   cout << "Density: ";
+   cout << "Density:\n";
    for (it = data.begin(); it != data.end(); ++it) {
        cout<<*it<<" ";
    }

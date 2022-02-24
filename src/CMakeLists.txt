@@ -1,9 +1,10 @@
 
 set(EXO_SRC
+        Isoparametrics.cpp
 	Mesh.cpp
+        PhysicalProperty.cpp
 	PredictorCorrector.cpp
 	ScalarMonotonic.cpp
-  Isoparametrics.cpp
 
    )
 

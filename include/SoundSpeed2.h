@@ -19,11 +19,16 @@ class SoundSpeed2 : public PhysicalProperty {
 
 public:
 
-  void updateSoundSpeed(const vector<double> &energy);
-  void print();
+    SoundSpeed2();
+    void updateSoundSpeed(const vector<double> &energy);
+    void print();
 
 };
 
+
+SoundSpeed2::SoundSpeed2() {
+    name = "SoundSpeed2";
+}
 
 /**
  * EOS substitute for now
@@ -31,11 +36,11 @@ public:
 void SoundSpeed2::updateSoundSpeed(const vector<double> &energy) {
 
 
-  for (int i= 0; i < data.size(); i++) {
-    double eint = energy[i]; //random ideal EOS need getEOS call
-    double gamma = 1.4;
-    data[i] = gamma * (gamma - 1.) * eint;
-  }
+    for (int i= 0; i < data.size(); i++) {
+        double eint = energy[i]; //random ideal EOS need getEOS call
+        double gamma = 1.4;
+        data[i] = gamma * (gamma - 1.) * eint;
+    }
 }
 
 
@@ -45,12 +50,12 @@ void SoundSpeed2::updateSoundSpeed(const vector<double> &energy) {
  */
 void SoundSpeed2::print() {
 
-  vector<double>::iterator it;
-  std::cout << "Sound speed: ";
-  for (it = data.begin(); it != data.end(); ++it) {
-    std::cout<<*it<<" ";
-  }
-  std::cout << "\n";
+    vector<double>::iterator it;
+    std::cout << "Sound speed squared:\n";
+    for (it = data.begin(); it != data.end(); ++it) {
+        std::cout<<*it<<" ";
+    }
+    std::cout << "\n";
 
 }
 

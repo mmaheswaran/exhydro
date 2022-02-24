@@ -50,7 +50,7 @@ void Acceleration::update(vector<double> &force,
 void Acceleration::print() {
 
    vector<double>::iterator it;
-   cout << "Acceleration: ";
+   cout << "Acceleration:\n";
    for (it = data.begin(); it != data.end(); ++it) {
        cout<<*it<<" ";
    }

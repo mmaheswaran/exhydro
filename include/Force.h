@@ -53,7 +53,7 @@ void Force::update(const vector<double> &pressure,
 void Force::print() {
 
    vector<double>::iterator it;
-   cout << "Force: ";
+   cout << "Force:\n";
    for (it = data.begin(); it != data.end(); ++it) {
        cout<<*it<<" ";
    }
