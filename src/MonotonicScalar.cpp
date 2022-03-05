@@ -1,22 +1,24 @@
 //Scalar Monotonic artificial viscosity method 2D implementation
+#include "MonotonicScalar.h"
+
 #include <math.h>
-#include "ScalarMonotonic.h"
 #include "Density.h"
+#include "Velocity.h"
+#include "SoundSpeed2.h"
 #include <vector>
 #include <algorithm>
 
-ScalarMonotonic::ScalarMonotonic(double quadCoeff, double linearCoeff) {
+MonotonicScalar::MonotonicScalar(double quadCoeff, double linearCoeff) {
   cquad = quadCoeff;
   clinear = linearCoeff;
 }
 
 
-void ScalarMonotonic::calculate(Mesh   &mesh,
-    Velocity    &velx,
-    Velocity    &vely,
-    SoundSpeed2 &csqrd,
-    Density     &density)
-{
+//2D implementation - needs templating/generalising
+void MonotonicScalar::calculate(Mesh &mesh,
+                                Velocity &vel,
+                                SoundSpeed2 &csqrd,
+                                Density &density) {
   int noElements = mesh.numberElements;
   vector<vector<double> > dudx;
   vector<double>dxtopbottom;
@@ -43,21 +45,17 @@ void ScalarMonotonic::calculate(Mesh   &mesh,
     dxtopbottom.push_back(lengthLhor > 0 ? area/lengthLhor : 0.0);
     dxleftright.push_back(lengthLver > 0 ? area/lengthLver : 0.0);
 
-    double v1x = velx.get(nodes[0]);
-    double v2x = velx.get(nodes[1]);
-    double v3x = velx.get(nodes[2]);
-    double v4x = velx.get(nodes[3]);
+    vector<double> v1 = vel.get(nodes[0]);
+    vector<double> v2 = vel.get(nodes[1]);
+    vector<double> v3 = vel.get(nodes[2]);
+    vector<double> v4 = vel.get(nodes[3]);
 
-    double v1y = vely.get(nodes[0]);
-    double v2y = vely.get(nodes[1]);
-    double v3y = vely.get(nodes[2]);
-    double v4y = vely.get(nodes[3]);
 
     vector<double> dudxelement;
-    dudxelement.push_back((Lhorx*(v2x - v1x) + Lhory*(v2y - v1y))/area);
-    dudxelement.push_back((Lverx*(v1x - v4x) + Lvery*(v1y - v4y))/area);
-    dudxelement.push_back((Lhorx*(v2x - v3x) + Lhorx*(v2y - v3y))/area);
-    dudxelement.push_back((Lverx*(v3x - v4x) + Lverx*(v3y - v4y))/area);
+    dudxelement.push_back((Lhorx*(v2[0] - v1[0]) + Lhory*(v2[1] - v1[1]))/area);
+    dudxelement.push_back((Lverx*(v1[0] - v4[0]) + Lvery*(v1[1] - v4[1]))/area);
+    dudxelement.push_back((Lhorx*(v2[0] - v3[0]) + Lhorx*(v2[1] - v3[1]))/area);
+    dudxelement.push_back((Lverx*(v3[0] - v4[0]) + Lverx*(v3[1] - v4[1]))/area);
 
     dudx.push_back(dudxelement);
 

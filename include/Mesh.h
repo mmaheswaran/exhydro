@@ -14,6 +14,8 @@
 #include <iostream>
 #include <unordered_map>
 #include "Isoparametrics.h"
+#include "Position.h"
+#include "Velocity.h"
 
 using namespace std;
 
@@ -45,9 +47,9 @@ public:
     void region(const int element, const int value);  //set
     const vector<int>& getRegionData() const { return _region; }
 
-    vector<double>& nodePositions(int index) {return _nodePositions[index];} //get
-    void nodePositions(const int node, const int dim, const double value); //set
-    void updateNodePos(double dt, vector<double> &nodevelocity);
+    vector<double>& nodePositions(int index) {return _nodepositions.get(index);} //get
+    void nodePositions(const int node, const int dim, const double value){_nodepositions.set(node,dim,value);} //set
+    void updateNodePos(Velocity &nodevelocity, double timestep, int dim);
 
     // setup boundary conditions
     // values at boundaries in each dimension
@@ -73,7 +75,7 @@ public:
 
 
 private:
-    vector<vector<double> > _nodePositions; //node positions
+    Position _nodepositions; //node positions
     vector<int> _region;                    //region number of each element
     Isoparametrics iso;
 

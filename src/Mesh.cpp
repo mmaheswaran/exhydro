@@ -8,6 +8,10 @@
 #include "Mesh.h"
 using namespace std;
 
+/**
+ * Initialise mesh with appropriate dimensions
+ * @param dimensions
+ */
 Mesh::Mesh(int dimensions) {
 
     DIMS = 2; //dimensions;
@@ -26,19 +30,19 @@ Mesh::Mesh(int dimensions) {
     }
 }
 
-void Mesh::nodePositions(const int node, const int dim, const double value) {
-    _nodePositions[node][dim] = value;
-}
 
+/**
+ * Set region number of element
+ * @param element
+ * @param value
+ */
 void Mesh::region(const int element, const int value) {
     _region[element] = value;
 }
 
-void Mesh::updateNodePos(double dt, vector<double> &nodevelocity) {
+void Mesh::updateNodePos(Velocity &nodevelocity, double timestep, int dim) {
 
-    for(int i = 0; i < nodevelocity.size(); i++){
-        _nodePositions[i][dim] += 0.5*dt;
-        }
+    _nodepositions.update(nodevelocity, timestep, dim);
 }
 
 void Mesh::initVelBC(vector<double> xmin,
@@ -60,10 +64,10 @@ void Mesh::initNodeBC(vector<double> xmin,
     for (int dim= 0; dim < DIMS; dim++) {
         nodeBC.push_back(DIMS, umap);
         for(int node = 0; node < numberNodes; node++) {
-            if(_nodePositions[node][dim] == xmin[dim] ) {
+            if(_nodepositions.get(node,dim) == xmin[dim] ) {
                 nodeBC[dim][node] = valatxmin[dim];
             }
-            if(_nodePositions[node][dim] == xmax[dim] ) {
+            if(_nodepositions.get(node,dim) == xmax[dim] ) {
                 nodeBC[dim][node] = valatxmax[dim];
             }
         }
@@ -72,18 +76,11 @@ void Mesh::initNodeBC(vector<double> xmin,
 
 void Mesh::printNodePos() {
 
-    for (const auto &inner : _nodePositions) {
-        for (const auto &item : inner) {
-            std::cout << item << " ";
-        }
-
-        std::cout << endl;
-    }
-    std::cout << endl;
+    _nodepositions.print();
 }
 
 /**
- * Finite element implementation returning area of element.
+ * Finite element implementation returning area of element - 2D implementation needs templating.
  * @param element number
  */
 double Mesh::getElementArea(int element) {
@@ -94,8 +91,8 @@ double Mesh::getElementArea(int element) {
     int vertices = 4;
     for (int v = 0; v < vertices; v++) {
         int n = nodes[v];
-        x[v] = _nodePositions[n][0];
-        y[v] = _nodePositions[n][1];
+        x[v] = _nodepositions.get(n,0);
+        y[v] = _nodepositions.get(n,1);
     }
     double detJ = iso.detJ(x, y, 0.0, 0.0);
     return 4 * detJ;
@@ -115,7 +112,7 @@ void Mesh::addRegion(int noElements, double extent, double origin,
     double dx = extent / noElements; //spacing
     for (int i = 0; i < noElements; i++) {
         vector<double> pos(i * dx + origin);
-        _nodePositions.push_back(pos);
+        _nodepositions.add(pos);
         _region.push_back(regionNumber);
         vector<int> nodes(i, i + 1);
         el2nodemap.push_back(nodes);
@@ -125,7 +122,7 @@ void Mesh::addRegion(int noElements, double extent, double origin,
 
     if (noElements > 0) {
         vector<double> pos(extent + origin);
-        _nodePositions.push_back(pos);
+        _nodepositions.add(pos);
     }
 
 }

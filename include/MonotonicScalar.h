@@ -19,11 +19,11 @@
 #ifndef SCALARMONOTONIC_H_
 #define SCALARMONOTONIC_H_
 
-class ScalarMonotonic : public ArtificialViscosity {
+class MonotonicScalar : public ArtificialViscosity {
 
 public:
 
-  ScalarMonotonic(double quadCoeff, double linearCoeff);
+  MonotonicScalar(double quadCoeff, double linearCoeff);
   void calculate(Mesh &mesh, Velocity &velx, Velocity &vely, SoundSpeed2 &csqrd, Density &density);
 
 private:

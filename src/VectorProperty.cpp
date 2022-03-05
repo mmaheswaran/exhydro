@@ -140,15 +140,13 @@ int VectorProperty::size(){
  */
 void VectorProperty::print() {
 
-  vector< vector<double> >::iterator row;
-  vector<double>::iterator col;
+  for (const auto &inner : data) {
+         for (const auto &item : inner) {
+             std::cout << item << " ";
+         }
 
-  cout << this.name << ":\n";
-  for (row = data.begin(); row != data.end(); ++row) {
-      for (col = row->begin(); col != row->end(); ++col) {
-                  cout << *col << " ";
-      }
-      cout << "\n";
-  }
+         std::cout << endl;
+     }
+     std::cout << endl;
 }
 
