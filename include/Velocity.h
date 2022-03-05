@@ -7,18 +7,18 @@
  *      Author: Mary-Ann Maheswaran
  */
 
-#include "PhysicalProperty.h"
+#include "VectorProperty.h"
+#include "Acceleration.h"
 
 #ifndef VELOCITY_H_
 #define VELOCITY_H_
 
-class Velocity : public PhysicalProperty {
+class Velocity : public VectorProperty {
 
 public:
 
     Velocity();
-	void update(vector<double> &acceleration, double timestep);
-	void print();
+	void update(Acceleration &acceleration, double timestep);
 
 };
 
@@ -31,30 +31,16 @@ Velocity::Velocity() {
  * @param acceleration
  * @param timestep
  */
-void Velocity::update(vector<double> &acceleration, double timestep) {
+void Velocity::update(Acceleration &acceleration, double timestep, int dim) {
 
 	for (int i= 0; i < data.size(); i++) {
 
-		data[i] = data[i] + acceleration[i] * timestep;
+		data[i][dim] += accel.get(i,dim) * timestep;
 
 	}
 }
 
 
-/**
- * Print the contents of array.
- *
- */
-void Velocity::print() {
-
-  vector<double>::iterator it;
-  std::cout << "Nodal velocity:\n";
-  for (it = data.begin(); it != data.end(); ++it) {
-    std::cout<<*it<<" ";
-  }
-  std::cout << "\n";
-
-}
 
 
 

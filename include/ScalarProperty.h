@@ -1,5 +1,5 @@
 /*
- * PhysicalProperty.h
+ * ScalarProperty.h
  *
  * Container class for physical properties
  *
@@ -12,14 +12,14 @@
 #include <string>
 using namespace std;
 
-#ifndef PHYSICALPROPERTY_H_
-#define PHYSICALPROPERTY_H_
+#ifndef SCALARPROPERTY_H_
+#define SCALARPROPERTY_H_
 
-class PhysicalProperty {
+class ScalarProperty {
 
 public:
 
-	virtual ~PhysicalProperty() {}
+	virtual ~ScalarProperty() {}
 	void init(int size, double initValue);
 
 	void setRegion(vector<int> regionInfo, int region,double initValue);
@@ -30,7 +30,7 @@ public:
     const string& getName() const {return name; }
     void setName(string newName);
 
-	virtual void print() = 0;
+	void print();
 
 	double get(int index);
 	void set(int index, double value);

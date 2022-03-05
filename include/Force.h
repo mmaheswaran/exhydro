@@ -6,19 +6,20 @@
  *  Created on: 12 Apr 2021
  *      Author: Mary-Ann Maheswaran
  */
-#include "PhysicalProperty.h"
+#include "ScalarProperty.h"
+#include "Pressure.h"
 
 #ifndef FORCE_H_
 #define FORCE_H_
 
-class Force : public PhysicalProperty {
+class Force : public VectorProperty {
 
 public:
 
     Force();
-	void update(const vector<double> &pressure, const std::vector<double> &area,
-				int nvertices, const vector< vector<int> > &el2nodmap);
-	void print();
+    void update(Pressure &pressure, const vector<double> &area,
+            int nvertices, const vector< vector<int> > &el2nodmap);
+    void print();
 
 };
 
@@ -29,37 +30,24 @@ Force::Force() {
 /**
  * Updates the force using pressure and area.
  * @param pressure - element centred
- * @param area - nodal area derived from isoparametrics
+ * @param area - nodal area
  * @param el2nodmap - element number to node number map
  */
-void Force::update(const vector<double> &pressure,
-				   std::vector<double> &area,
-				   int nvertices,
-				   const vector< vector<int> > &el2nodmap) {
+void Force::update(Pressure &pressure,
+        vector<double> &area,
+        int nvertices,
+        const vector< vector<int> > &el2nodmap,
+        int dim) {
 
-	for (int el= 0; el < pressure.size(); el++) {
-		for (int v = 0; v < nvertices; v++) {
-			int node = el2nodmap[el][v];
-			data[node] = pressure[el] * area[node];
-		}
+    for (int el= 0; el < pressure.size(); el++) {
+        for (int v = 0; v < nvertices; v++) {
+            int node = el2nodmap[el][v];
+            data[node][dim] = pressure.get(el) * area[node];
+        }
 
-	}
+    }
 }
 
-/**
- * Print the contents of array.
- *
- */
-void Force::print() {
-
-   vector<double>::iterator it;
-   cout << "Force:\n";
-   for (it = data.begin(); it != data.end(); ++it) {
-       cout<<*it<<" ";
-   }
-   cout << "\n";
-
-}
 
 
 #endif /* FORCE_H_ */

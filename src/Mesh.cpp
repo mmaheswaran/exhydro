@@ -34,6 +34,42 @@ void Mesh::region(const int element, const int value) {
     _region[element] = value;
 }
 
+void Mesh::updateNodePos(double dt, vector<double> &nodevelocity) {
+
+    for(int i = 0; i < nodevelocity.size(); i++){
+        _nodePositions[i][dim] += 0.5*dt;
+        }
+}
+
+void Mesh::initVelBC(vector<double> xmin,
+                     vector<double> xmax,
+                     vector<double> valatxmin,
+                     vector<double> valatxmax) {
+
+    this.initNodeBC(xmin,xmax,valatxmin,valatxmax,velBC);
+}
+
+void Mesh::initNodeBC(vector<double> xmin,
+                     vector<double> xmax,
+                     vector<double> valatxmin,
+                     vector<double> valatxmax,
+                     vector<unordered_map<int, double> > &nodeBC) {
+
+    unordered_map<int, double> umap;
+
+    for (int dim= 0; dim < DIMS; dim++) {
+        nodeBC.push_back(DIMS, umap);
+        for(int node = 0; node < numberNodes; node++) {
+            if(_nodePositions[node][dim] == xmin[dim] ) {
+                nodeBC[dim][node] = valatxmin[dim];
+            }
+            if(_nodePositions[node][dim] == xmax[dim] ) {
+                nodeBC[dim][node] = valatxmax[dim];
+            }
+        }
+    }
+}
+
 void Mesh::printNodePos() {
 
     for (const auto &inner : _nodePositions) {

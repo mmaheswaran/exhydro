@@ -12,13 +12,36 @@ class TimeSolver {
 public:
 
   virtual ~TimeSolver() {}
+  void init(double initdt, int initstep, double st, double et);
 
-  virtual void step(double dt) = 0;
+  const int& getStep() const {return step; }
+  void setStep(int newstep);
+  virtual void updateStep() = 0;
 
-  double getStep();
-  double getTime();
+  const double& getTimeStep() const {return dt; }
+  void setTimeStep(int newtimestep);
+  virtual void updateTimeStep() = 0;
+
+protected:
+
+  double dt;
+  int step;
+  double starttime;
+  double endtime;
 
 };
+
+void TimeSolver::init(double initdt,
+                      int initstep,
+                      double st,
+                      double et) {
+
+    dt        = initdt;
+    step      = initstep;
+    starttime = st;
+    endtime   = et;
+
+}
 
 
 

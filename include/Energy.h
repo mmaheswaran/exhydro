@@ -5,22 +5,26 @@
  *      Author: Mary-Ann Maheswaran
  */
 
-#include "PhysicalProperty.h"
+#include "ScalarProperty.h"
+#include "Force.h"
+#include "Velocity.h"
+#include "Mass.h"
 
 #ifndef PHYSICS_ENERGY_H_
 #define PHYSICS_ENERGY_H_
 
-class Energy : public PhysicalProperty {
+class Energy : public ScalarProperty {
 
 public:
 
     Energy();
-	void update(vector<double> &force,
-				vector<double> &velocity,
-				vector<double> &mass,
+	void update(Force &force,
+				Velocity &velocity,
+				Mass &mass,
 			    double masscut,
 				double timestep,
 			    int nvertices,
+			    int dim,
 				vector< vector<int> > &el2nodmap);
 	void print();
 
@@ -40,38 +44,25 @@ Energy::Energy() {
  * @param nvertices - number of vertices in an element
  * @param el2nodmap - map element number to node number
  */
-void Energy::update(vector<double> &force,
-					vector<double> &velocity,
-					vector<double> &mass,
-					double masscut,
-					double timestep,
-					int nvertices,
-					vector< vector<int> > &el2nodmap)
+void Energy::update(Force &force,
+                    Velocity &velocity,
+                    Mass &mass,
+                    double masscut,
+                    double timestep,
+                    int nvertices,
+                    int dim,
+                    vector< vector<int> > &el2nodmap)
 {
 	for (int el= 0; el < mass.size(); el++) {
 		for (int v = 0; v < nvertices; v++) {
 
 			int node = el2nodmap[el][v];
-			double m = std::max(mass[el], masscut);
+			double m = max(mass.get(el), masscut);
 
-			data[el] += -(force[node] * velocity[node]) * timestep / m;
+			data[el] += -(force.get(node,dim) * velocity.get(node,dim)) * timestep / m;
 		}
 	}
 
 }
 
-/**
- * Print the contents of array.
- *
- */
-void Energy::print() {
-
-   vector<double>::iterator it;
-   cout << "Energy:\n";
-   for (it = data.begin(); it != data.end(); ++it) {
-       cout<<*it<<" ";
-   }
-   cout << "\n";
-
-}
 #endif /* PHYSICS_ENERGY_H_ */

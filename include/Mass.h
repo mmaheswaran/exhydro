@@ -6,17 +6,19 @@
  *  Created on: 24 Mar 2021
  *      Author: Mary-Ann Maheswaran
  */
-#include "PhysicalProperty.h"
+#include "ScalarProperty.h"
+#include "Density.h"
+#include "Volume.h"
 
 #ifndef MASS_H_
 #define MASS_H_
 
-class Mass : public PhysicalProperty {
+class Mass : public ScalarProperty {
 
 public:
 
     Mass();
-	void update(vector<double> &density, vector<double> &volume);
+	void update(Density &density, Volume &volume);
 	void print();
 
 };
@@ -30,27 +32,13 @@ Mass::Mass() {
  * @param density
  * @param volume
  */
-void Mass::update(vector<double> &density, vector<double> &volume) {
+void Mass::update(Density &density, Volume &volume) {
 
 	for (int i= 0; i < data.size(); i++) {
-		data[i] = density[i] * volume[i];
+		data[i] = density.get(i) * volume.get(i);
 	}
 }
 
-/**
- * Print the contents of array.
- *
- */
-void Mass::print() {
-
-   vector<double>::iterator it;
-   cout << "Mass:\n";
-   for (it = data.begin(); it != data.end(); ++it) {
-       cout<<*it<<" ";
-   }
-   cout << "\n";
-
-}
 
 
 #endif /* MASS_H_ */

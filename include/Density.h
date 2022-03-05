@@ -7,17 +7,19 @@
  *      Author: Mary-Ann Maheswaran
  */
 
-#include "PhysicalProperty.h"
+#include "ScalarProperty.h"
+#include "Mass.h"
+#include "Volume.h"
 
 #ifndef DENSITY_H_
 #define DENSITY_H_
 
-class Density : public PhysicalProperty {
+class Density : public ScalarProperty {
 
 public:
 
     Density();
-	void update(vector<double> &mass, vector<double> &volume);
+	void update(Mass &mass, Volume &volume);
 	void print();
 
 };
@@ -31,27 +33,13 @@ Density::Density() {
  * @param mass
  * @param volume
  */
-void Density::update(vector<double> &mass, vector<double> &volume) {
+void Density::update(Mass &mass, Volume &volume) {
 
 	for (int i= 0; i < data.size(); i++) {
-		data[i] = mass[i] / volume[i];
+		data[i] = mass.get(i) / volume.get(i);
 	}
 }
 
 
-/**
- * Print the contents of array.
- *
- */
-void Density::print() {
-
-   vector<double>::iterator it;
-   cout << "Density:\n";
-   for (it = data.begin(); it != data.end(); ++it) {
-       cout<<*it<<" ";
-   }
-   cout << "\n";
-
-}
 
 #endif /* DENSITY_H_ */

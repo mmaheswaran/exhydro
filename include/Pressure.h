@@ -8,19 +8,21 @@
  */
 
 
-#include "PhysicalProperty.h"
+#include "ScalarProperty.h"
+#include "Density.h"
+#include "Energy.h"
 
 #ifndef PRESSURE_H_
 #define PRESSURE_H_
 
 
-class Pressure : public PhysicalProperty {
+class Pressure : public ScalarProperty {
 
 
 public:
 
     Pressure();
-	void updatePressure(const vector<double> &density, const vector<double> &energy);
+	void updatePressure(Density &density, Energy &energy);
 	void print();
 
 };
@@ -32,27 +34,12 @@ Pressure::Pressure() {
 /**
  * EOS substitute for now
  */
-void Pressure::updatePressure(const vector<double> &density, const vector<double> &energy) {
+void Pressure::updatePressure(Density &density, Energy &energy) {
 
 
 	for (int i= 0; i < data.size(); i++) {
-		data[i] = density[i] * energy[i] * (1.4 - 1); //random ideal EOS, need getEOS call
+		data[i] = density.get(i) * energy.get(i) * (1.4 - 1); //random ideal EOS, need getEOS call
 	}
-}
-
-/**
- * Print the contents of array.
- *
- */
-void Pressure::print() {
-
-   vector<double>::iterator it;
-   cout << "Pressure:\n";
-   for (it = data.begin(); it != data.end(); ++it) {
-       cout<<*it<<" ";
-   }
-   cout << "\n";
-
 }
 
 #endif /* PRESSURE_H_ */

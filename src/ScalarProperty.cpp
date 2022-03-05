@@ -1,25 +1,25 @@
 /*
- * PhysicalProperty.cpp
+ * ScalarProperty.cpp
  *
  *  Created on: 20 Feb 2022
  *      Author: maryann
  */
 
 
-#include "PhysicalProperty.h"
 #include <iostream>
+#include "ScalarProperty.h"
 
 /**
  * Initialises data array.  Will re-initialise by clearing any existing elements first.
  * @param size the number of element needed in data array
  * @param initValue the initial value of the data array
  */
-void PhysicalProperty::init(int size, double initValue) {
+void ScalarProperty::init(int size, double initValue) {
 
     data.resize(size, initValue);
 }
 
-void PhysicalProperty::setRegion(vector<int> regionInfo, int region, double initValue) {
+void ScalarProperty::setRegion(vector<int> regionInfo, int region, double initValue) {
 
     for (int i= 0; i < data.size(); i++) {
         if (regionInfo[i] == region) {
@@ -33,7 +33,7 @@ void PhysicalProperty::setRegion(vector<int> regionInfo, int region, double init
  * Get data at index
  * @param index
  */
-double PhysicalProperty::get(int index) {
+double ScalarProperty::get(int index) {
 
     return data[index];
 }
@@ -43,7 +43,7 @@ double PhysicalProperty::get(int index) {
  * @param index
  * @param value
  */
-void PhysicalProperty::set(int index, double value) {
+void ScalarProperty::set(int index, double value) {
 
     data[index] = value;
 }
@@ -53,7 +53,7 @@ void PhysicalProperty::set(int index, double value) {
  * Set data to new values
  * @param values from another vector
  */
-void PhysicalProperty::setData(std::vector<double> values) {
+void ScalarProperty::setData(std::vector<double> values) {
 
     data = values;
 }
@@ -62,7 +62,7 @@ void PhysicalProperty::setData(std::vector<double> values) {
  * Set new name of physical property
  * @param newName
  */
-void PhysicalProperty::setName(string newName) {
+void ScalarProperty::setName(string newName) {
 
     name = newName;
 }
@@ -71,7 +71,7 @@ void PhysicalProperty::setName(string newName) {
  * Adds new to existing values
  * @param values
  */
-void PhysicalProperty::add(std::vector<double> values) {
+void ScalarProperty::add(std::vector<double> values) {
 
     for (int i= 0; i < values.size(); i++) {
             data.push_back(values[i]);
@@ -82,7 +82,7 @@ void PhysicalProperty::add(std::vector<double> values) {
  * Push new value to back of data array.
  * @param value
  */
-void PhysicalProperty::add(double value) {
+void ScalarProperty::add(double value) {
 
     data.push_back(value);
 }
@@ -91,9 +91,25 @@ void PhysicalProperty::add(double value) {
  * Returns size of data structure.
  *
  */
-int PhysicalProperty::size() {
+int ScalarProperty::size() {
 
     return data.size();
+
+}
+
+
+/**
+ * Print the contents of array.
+ *
+ */
+void ScalarProperty::print() {
+
+    vector<double>::iterator it;
+    cout << this.name << ":"\n";
+    for (it = data.begin(); it != data.end(); ++it) {
+        cout<<*it<<" ";
+    }
+    cout << "\n";
 
 }
 

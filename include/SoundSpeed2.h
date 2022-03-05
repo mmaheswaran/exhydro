@@ -8,19 +8,21 @@
  */
 
 #include <iostream>
-#include "PhysicalProperty.h"
+
+#include "ScalarProperty.h"
+#include "Energy.h"
 
 #ifndef SOUNDSPEED_H_
 #define SOUNDSPEED_H_
 
 
-class SoundSpeed2 : public PhysicalProperty {
+class SoundSpeed2 : public ScalarProperty {
 
 
 public:
 
     SoundSpeed2();
-    void updateSoundSpeed(const vector<double> &energy);
+    void updateSoundSpeed(Energy &energy);
     void print();
 
 };
@@ -33,31 +35,16 @@ SoundSpeed2::SoundSpeed2() {
 /**
  * EOS substitute for now
  */
-void SoundSpeed2::updateSoundSpeed(const vector<double> &energy) {
+void SoundSpeed2::updateSoundSpeed(Energy &energy) {
 
 
     for (int i= 0; i < data.size(); i++) {
-        double eint = energy[i]; //random ideal EOS need getEOS call
+        double eint = energy.get(i); //random ideal EOS need getEOS call
         double gamma = 1.4;
         data[i] = gamma * (gamma - 1.) * eint;
     }
 }
 
-
-/**
- * Print the contents of array.
- *
- */
-void SoundSpeed2::print() {
-
-    vector<double>::iterator it;
-    std::cout << "Sound speed squared:\n";
-    for (it = data.begin(); it != data.end(); ++it) {
-        std::cout<<*it<<" ";
-    }
-    std::cout << "\n";
-
-}
 
 
 

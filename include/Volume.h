@@ -6,21 +6,20 @@
  */
 
 #include <cassert>
-#include "PhysicalProperty.h"
+
+#include "ScalarProperty.h"
+#include "Mesh.h"
 
 #ifndef VOLUME_H_
 #define VOLUME_H_
 
-class Volume : public PhysicalProperty{
+class Volume : public ScalarProperty{
 
 public:
 
     Volume();
 	void update(Mesh &mesh);
     void print();
-private:
-	vector<double> data;
-
 };
 
 Volume::Volume() {
@@ -41,20 +40,6 @@ void Volume::update(Mesh &mesh) {
 	}
 }
 
-/**
- * Print the contents of array.
- *
- */
-void Volume::print() {
-
-    vector<double>::iterator it;
-    std::cout << "Volume of elements:\n";
-    for (it = data.begin(); it != data.end(); ++it) {
-        std::cout<<*it<<" ";
-    }
-    std::cout << "\n";
-
-}
 
 
 #endif /* VOLUME_H_ */

@@ -1,15 +1,17 @@
 #include <iostream>
-#include "PhysicalProperty.h"
 #include "Density.h"
 #include "Energy.h"
 #include "Pressure.h"
 #include "SoundSpeed2.h"
+#include "Velocity.h"
 #include "Mesh.h"
+#include "PredictorCorrector.h"
 #include <fstream> // for file-access
 #include <string>
 #include <sstream>
 #include <queue>
 #include <map>
+#include "../include/ScalarProperty.h"
 
 //#include <bits/stdc++.h>
 
@@ -17,10 +19,12 @@ using namespace std;
 
 // Initialise physical properties for Sod shock tube
 void init2DSod(Mesh &mesh,
-			 Density &density,
-			 Energy &energy,
-			 Pressure &pressure,
-			 SoundSpeed2 &ccs2)
+			   Density &density,
+			   Energy &energy,
+			   Pressure &pressure,
+			   SoundSpeed2 &ccs2,
+               Velocity &nvelocity,
+			   double initdt)
 {
 
 	//add 2 regions
@@ -38,12 +42,14 @@ void init2DSod(Mesh &mesh,
 	mesh.addRegion(reg2_mesh_size, reg2_length, reg2_origins, 2);
 
     int noElements = mesh.numberElements;
+    int noNodes = mesh.numberNodes;
 
     //initialise physical arrays
     density.init(noElements,0.0);
     energy.init(noElements,0.0);
     pressure.init(noElements,0.0);
 	ccs2.init(noElements,0.0);
+	nvelocity.init(noNodes,0.0);
 
 
 	const vector<int> &regionInfo = mesh.getRegionData();
@@ -55,6 +61,9 @@ void init2DSod(Mesh &mesh,
 
 	pressure.updatePressure(density.getData(), energy.getData());
 	ccs2.updateSoundSpeed(energy.getData());
+
+
+    initdt =  1e-4; //initial timestep
 
 
 }
@@ -87,8 +96,11 @@ int main(int argc, char **argv) {
      * predictor-corrector [1]
      * Runge-Kutta [2]
      */
-    int timesolver = 1; //default predictor-corrector temporal solver
-    int noregions = 1;
+    int timesolver   = 1;    //default predictor-corrector temporal solver
+    int startstep    = 0;
+    double initdt    = 1e-4; //initial timestep
+    double starttime = 0.0;
+    double endtime   = 20.0;
 
     //Setup physical properties
     Density density;
@@ -106,11 +118,19 @@ int main(int argc, char **argv) {
     }
 
 
-
     Mesh mesh(nodimensions);
 
 
-    init2DSod(mesh,density,energy,pressure,ccs2);
+    init2DSod(mesh,density,energy,pressure,ccs2,initdt);
+
+    if (timesolver==1) {
+        PredictorCorrector solver;
+        solver.init(initdt, startstep, starttime, endtime);
+        solver.solve(mesh, density, energy, pressure, ccs2);
+
+    }
+
+
 
     pressure.print();
     ccs2.print();
