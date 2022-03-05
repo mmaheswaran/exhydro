@@ -20,10 +20,10 @@ public:
   double getPos(vector<double> &nodesPos, double xi, double eta, double zeta);
   //vector<double> getJacobian(vector<double> &nodesPos, double xi, double eta);
 
-  double detJ(double* x, double* y, double xi, double eta);
   void Jacobian(double J[4], double* x, double* y, double xi, double eta);
+  double detJ(double* x, double* y, double xi, double eta);
+  void getArea(double* x, double* y);
 
-private:
 
 };
 

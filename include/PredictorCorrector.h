@@ -13,6 +13,8 @@
 #include "ScalarProperty.h"
 #include "SoundSpeed2.h"
 #include "Velocity.h"
+#include "Volume.h"
+#include "MonotonicScalar.h"
 
 #ifndef PREDICTORCORRECTOR_H_
 #define PREDICTORCORRECTOR_H_
@@ -36,6 +38,10 @@ public:
                 SoundSpeed2 &ccs2,
                 Velocity &velocity,
                 double timestep);
+private:
+
+  MonotonicScalar artvisc;
+
 
 
 };

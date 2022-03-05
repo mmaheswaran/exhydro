@@ -16,6 +16,7 @@
 #include "Isoparametrics.h"
 #include "Position.h"
 #include "Velocity.h"
+#include "Volume.h"
 
 using namespace std;
 
@@ -64,19 +65,17 @@ public:
                     vector<double> valatxmax,
                     vector<unordered_map<int, double> > &elemBC);*/
 
-    void printNodePos();					//printNodePos node positions
-    //	double getVolume(int element);		//get volume of an element
+    void printNodePos();				//printNodePos node positions
 
     void addRegion(int noElements, double extent, double origin, int regionNumber);           //1D
     void addRegion(int noElements[2], double extents[2], double origin[2], int regionNumber); //2D
     //void addRegion(int noElements[3], double extents[3], double origin[3], int regionNumber); //3D
 
-    double getElementArea(int index);
-
+    double getVolume(int index);
 
 private:
     Position _nodepositions; //node positions
-    vector<int> _region;                    //region number of each element
+    vector<int> _region;     //region number of each element
     Isoparametrics iso;
 
     // Boundary conditions for component dimensions

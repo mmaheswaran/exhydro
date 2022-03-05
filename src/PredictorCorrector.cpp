@@ -21,7 +21,7 @@ void PredictorCorrector::solve(Mesh &mesh,
     while (time < endtime) {
 
         //Predictor half step
-        halfstep(mesh,density,energy,pressure,ccs2,velocity,dt/2);
+        halfstep(mesh,density,energy,pressure,ccs2,velocity,artvisc,dt/2);
 
         // Calculate velocity
 
@@ -46,16 +46,24 @@ void PredictorCorrector::halfstep(Mesh &mesh,
                                   Pressure &pressure,
                                   SoundSpeed2 &ccs2,
                                   Velocity &velocity,
+                                  Volume &volume,
+                                  Mass &mass,
+                                  MonotonicScalar artvisc,
                                   double timestep) {
 
     // Calculate new mesh coordinates using velocities and timestep
-
+    for(int d = 0; d < mesh.DIMS; d++) {
+        mesh.updateNodePos(velocity, timestep, d);
+    }
 
     // Calculate element/cell volumes
+    volume.update(mesh);
 
     // Calculate densities
+    density.update(mass, volume);
 
     // Calculate energy
+    energy.update
 
     // Calculate pressure
 

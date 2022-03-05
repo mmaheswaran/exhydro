@@ -78,3 +78,16 @@ double Isoparametrics::detJ(double* x, double* y, double xi, double eta) {
 
 }
 
+/**
+ * Get volume of cell 2D implementation
+ * dxdy = detJ*(dtheta)*(deta) = detJ*4
+ * @param J array to store Jacobian calculation
+ * @param x array to hold element x positions
+ * @param y array to hold element y positions
+ */
+double Isoparametrics::getArea(double* x, double* y) {
+
+    double J[4];
+    return 4*detJ(x, y, 0.0, 0.0);
+}
+

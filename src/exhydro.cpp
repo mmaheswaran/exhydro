@@ -4,7 +4,9 @@
 #include "Pressure.h"
 #include "SoundSpeed2.h"
 #include "Velocity.h"
-#include "Mesh.h"
+#include "Volume.h"
+#include "Velocity.h"
+#include "Mass.h"
 #include "PredictorCorrector.h"
 #include <fstream> // for file-access
 #include <string>
@@ -23,6 +25,8 @@ void init2DSod(Mesh &mesh,
 			   Energy &energy,
 			   Pressure &pressure,
 			   SoundSpeed2 &ccs2,
+               Volume &volume,
+               Mass &mass,
                Velocity &nvelocity,
 			   double initdt)
 {
@@ -50,6 +54,8 @@ void init2DSod(Mesh &mesh,
     pressure.init(noElements,0.0);
 	ccs2.init(noElements,0.0);
 	nvelocity.init(noNodes,0.0);
+	volume.init(noElements,0.0);
+    mass.init(noElements,0.0);
 
 
 	const vector<int> &regionInfo = mesh.getRegionData();
@@ -61,6 +67,9 @@ void init2DSod(Mesh &mesh,
 
 	pressure.updatePressure(density.getData(), energy.getData());
 	ccs2.updateSoundSpeed(energy.getData());
+
+	volume.update(mesh);
+	mass.update(density, volume);
 
 
     initdt =  1e-4; //initial timestep
@@ -107,6 +116,8 @@ int main(int argc, char **argv) {
     Energy energy;
     Pressure pressure;
     SoundSpeed2 ccs2;
+    Volume volume;
+    Mass mass;
 
 
     //read in input file
@@ -121,12 +132,12 @@ int main(int argc, char **argv) {
     Mesh mesh(nodimensions);
 
 
-    init2DSod(mesh,density,energy,pressure,ccs2,initdt);
+    init2DSod(mesh,density,energy,pressure,ccs2,volume,mass,initdt);
 
     if (timesolver==1) {
         PredictorCorrector solver;
         solver.init(initdt, startstep, starttime, endtime);
-        solver.solve(mesh, density, energy, pressure, ccs2);
+        solver.solve(mesh,density,energy,pressure,ccs2,volume,mass);
 
     }
 

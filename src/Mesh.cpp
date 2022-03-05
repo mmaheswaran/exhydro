@@ -83,7 +83,7 @@ void Mesh::printNodePos() {
  * Finite element implementation returning area of element - 2D implementation needs templating.
  * @param element number
  */
-double Mesh::getElementArea(int element) {
+double Mesh::getVolume(int element) {
 
     vector<int> nodes = el2nodemap[element];
     double x[4];
