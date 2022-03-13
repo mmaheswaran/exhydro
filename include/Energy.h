@@ -9,6 +9,7 @@
 #include "Force.h"
 #include "Velocity.h"
 #include "Mass.h"
+#include "Pressure.h"
 
 #ifndef PHYSICS_ENERGY_H_
 #define PHYSICS_ENERGY_H_
@@ -26,6 +27,13 @@ public:
 			    int nvertices,
 			    int dim,
 				vector< vector<int> > &el2nodmap);
+
+	void update(Pressure &pressure,
+	            ArtificialViscosity & q,
+	            Mass &mass,
+	            Velocity &velocity,
+	            double timestep);
+
 	void print();
 
 };
@@ -53,7 +61,7 @@ void Energy::update(Force &force,
                     int dim,
                     vector< vector<int> > &el2nodmap)
 {
-	for (int el= 0; el < mass.size(); el++) {
+	for (int el= 0; el < data.size(); el++) {
 		for (int v = 0; v < nvertices; v++) {
 
 			int node = el2nodmap[el][v];
@@ -64,5 +72,25 @@ void Energy::update(Force &force,
 	}
 
 }
+
+/**
+ * Updates energy using standard PDV method
+ */
+void Energy::update(Mesh &mesh,
+                    Pressure &pressure,
+                    ArtificialViscosity & q,
+                    Velocity &velocity,
+                    double timestep) {
+
+    for (int el= 0; el < data.size(); el++) {
+        // find divergence of velocity field
+        // add pressure and artificial viscosity
+        // update energy by dt*(p+q)*div.v/M
+
+    }
+
+}
+
+
 
 #endif /* PHYSICS_ENERGY_H_ */

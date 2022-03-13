@@ -86,10 +86,9 @@ void Mesh::printNodePos() {
 double Mesh::getVolume(int element) {
 
     vector<int> nodes = el2nodemap[element];
-    double x[4];
-    double y[4];
-    int vertices = 4;
-    for (int v = 0; v < vertices; v++) {
+    double x[noVertices];
+    double y[noVertices];
+    for (int v = 0; v < noVertices; v++) {
         int n = nodes[v];
         x[v] = _nodepositions.get(n,0);
         y[v] = _nodepositions.get(n,1);
@@ -201,5 +200,18 @@ void Mesh::addRegion(int noElements[2], double extents[2], double origin[2], int
             numberElements++;
         }
     }
+}
+
+/**
+ * Return divergence of a property
+ */
+vector<double> Mesh::calDivPerElement(VectorProperty &vp) {
+
+    //get integral of partial derivative shape functions
+
+
+    //multiply for each node along each dimension to get divergence in a element
+
+
 }
 

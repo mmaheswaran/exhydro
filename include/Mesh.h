@@ -55,9 +55,9 @@ public:
     // setup boundary conditions
     // values at boundaries in each dimension
     void initVelBC(vector<double> xmin,
-                    vector<double> xmax,
-                    vector<double> valatxmin,
-                    vector<double> valatxmax);
+                   vector<double> xmax,
+                   vector<double> valatxmin,
+                   vector<double> valatxmax);
 
   /*  void initElemBC(vector<double> xmin,
                     vector<double> xmax,
@@ -72,6 +72,8 @@ public:
     //void addRegion(int noElements[3], double extents[3], double origin[3], int regionNumber); //3D
 
     double getVolume(int index);
+
+    vector<double> calDivPerElement(VectorProperty &vp);
 
 private:
     Position _nodepositions; //node positions

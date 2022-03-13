@@ -91,3 +91,28 @@ double Isoparametrics::getArea(double* x, double* y) {
     return 4*detJ(x, y, 0.0, 0.0);
 }
 
+/**
+ * Get integral of shape functions' partial derivative 2D
+ * int{\frac{\partial N_1}{\partial x}}, etc...
+ * @param realnodpos position of nodes in real space
+ */
+void Isoparametrics::intPartialDerivative(double result[8],double* x, double* y) {
+
+    double A1=0.25*(-x[0]+x[1]+x[2]-x[3]);
+    double A3=0.25*(-x[0]-x[1]+x[2]+x[3]);
+
+    double B1=0.25*(-y[0]+y[1]+y[2]-y[3]);
+    double B3=0.25*(-y[0]-y[1]+y[2]+y[3]);
+
+    result[0]=-B3+B1;
+    result[1]= A3-A1;
+    result[2]= B3+B1;
+    result[3]=-A3-A1;
+    result[4]= B3-B1;
+    result[5]=-A3+A1;
+    result[6]=-B3-B1;
+    result[7]= A3-A1;
+
+
+}
+

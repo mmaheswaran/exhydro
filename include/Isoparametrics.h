@@ -23,6 +23,7 @@ public:
   void Jacobian(double J[4], double* x, double* y, double xi, double eta);
   double detJ(double* x, double* y, double xi, double eta);
   void getArea(double* x, double* y);
+  void intPartialDerivative(double result[8],double* x, double* y);
 
 
 };
