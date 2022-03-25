@@ -208,8 +208,29 @@ void Mesh::addRegion(int noElements[2], double extents[2], double origin[2], int
 vector<double> Mesh::calDivPerElement(VectorProperty &vp) {
 
     //get integral of partial derivative shape functions
+    double intpdeshapefunction[noVertices][DIMS];
+    vector<double> div;
+    double x[noVertices];
+    double y[noVertices];
+
+    for(int i=0; i<numberElements; i++) {
+        vector<double> coords = _nodePositions.get(i);
+        for(int j =0; j < noVertices; j++) {
+            x[j]=coords[j][0];
+            y[j]=coords[j][1];
+        }
+        iso.intPartialDerivative(intpdeshapefunction, *x, *y);
+
+        double d = 0.0;
+        for(int j=0; j < noVertices; j++) {
+            int node = el2nodemap[i][2];
+            for(int k = 0; k < DIMS; k++) {
+                d += vp[node][k] * intpdeshapefunction[j][k];
+            }
+        }
 
 
+    }
     //multiply for each node along each dimension to get divergence in a element
 
 
