@@ -203,11 +203,13 @@ void Mesh::addRegion(int noElements[2], double extents[2], double origin[2], int
 }
 
 /**
- * Return divergence of a property
+ * Return divergence of a property per element
+ * @param VectorProperty vector property you need to calculate divergence for
  */
-vector<double> Mesh::calDivPerElement(VectorProperty &vp) {
+vector<double> Mesh::calcDiv(VectorProperty &vp) {
 
     //get integral of partial derivative shape functions
+    //*** need to generalise this divergence calculation routine **
     double intpdeshapefunction[noVertices][DIMS];
     vector<double> div;
     double x[noVertices];
@@ -221,6 +223,7 @@ vector<double> Mesh::calDivPerElement(VectorProperty &vp) {
         }
         iso.intPartialDerivative(intpdeshapefunction, *x, *y);
 
+        //multiply for each node along each dimension to get divergence in a element
         double d = 0.0;
         for(int j=0; j < noVertices; j++) {
             int node = el2nodemap[i][2];
@@ -228,10 +231,10 @@ vector<double> Mesh::calDivPerElement(VectorProperty &vp) {
                 d += vp[node][k] * intpdeshapefunction[j][k];
             }
         }
-
-
+        div.push_back(d);
     }
-    //multiply for each node along each dimension to get divergence in a element
+
+    return div;
 
 
 }

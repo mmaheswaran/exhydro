@@ -22,7 +22,7 @@ class Pressure : public ScalarProperty {
 public:
 
     Pressure();
-	void updatePressure(Density &density, Energy &energy);
+	void update(Density &density, Energy &energy);
 	void print();
 
 };
@@ -34,7 +34,7 @@ Pressure::Pressure() {
 /**
  * EOS substitute for now
  */
-void Pressure::updatePressure(Density &density, Energy &energy) {
+void Pressure::update(Density &density, Energy &energy) {
 
 
 	for (int i= 0; i < data.size(); i++) {

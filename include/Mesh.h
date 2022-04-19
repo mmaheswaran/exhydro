@@ -73,7 +73,7 @@ public:
 
     double getVolume(int index);
 
-    vector<double> calDivPerElement(VectorProperty &vp);
+    vector<double> calcDiv(VectorProperty &vp);
 
 private:
     Position _nodepositions; //node positions

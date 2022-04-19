@@ -65,8 +65,8 @@ void init2DSod(Mesh &mesh,
 	density.setRegion(regionInfo, 2, 0.125);
 	energy.setRegion(regionInfo, 2, 2.0);
 
-	pressure.updatePressure(density.getData(), energy.getData());
-	ccs2.updateSoundSpeed(energy.getData());
+	pressure.update(density, energy);
+	ccs2.update(energy);
 
 	volume.update(mesh);
 	mass.update(density, volume);

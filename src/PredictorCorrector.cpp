@@ -14,14 +14,17 @@ void PredictorCorrector::solve(Mesh &mesh,
                                Density &density,
                                Energy &energy,
                                Pressure &pressure,
-                               SoundSpeed2 &ccs2) {
+                               SoundSpeed2 &ccs2,
+                               Velocity &velocity,
+                               Volume &volume,
+                               Mass &mass) {
 
     double time = starttime;
 
     while (time < endtime) {
 
         //Predictor half step
-        halfstep(mesh,density,energy,pressure,ccs2,velocity,artvisc,dt/2);
+        halfstep(mesh,density,energy,pressure,ccs2,velocity,volume,mass,artvisc,dt/2);
 
         // Calculate velocity
 
@@ -63,11 +66,13 @@ void PredictorCorrector::halfstep(Mesh &mesh,
     density.update(mass, volume);
 
     // Calculate energy
-    energy.update
+    energy.update(mesh, pressure, artvisc, velocity, mass, timestep);
 
     // Calculate pressure
+    pressure.update(density, energy);
 
     // Calculate sound speed
+    ccs2.update(energy);
 
 
 

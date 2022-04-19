@@ -22,7 +22,7 @@ class SoundSpeed2 : public ScalarProperty {
 public:
 
     SoundSpeed2();
-    void updateSoundSpeed(Energy &energy);
+    void update(Energy &energy);
     void print();
 
 };
@@ -35,7 +35,7 @@ SoundSpeed2::SoundSpeed2() {
 /**
  * EOS substitute for now
  */
-void SoundSpeed2::updateSoundSpeed(Energy &energy) {
+void SoundSpeed2::update(Energy &energy) {
 
 
     for (int i= 0; i < data.size(); i++) {

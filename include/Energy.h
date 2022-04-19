@@ -19,22 +19,22 @@ class Energy : public ScalarProperty {
 public:
 
     Energy();
-	void update(Force &force,
-				Velocity &velocity,
-				Mass &mass,
-			    double masscut,
-				double timestep,
-			    int nvertices,
-			    int dim,
-				vector< vector<int> > &el2nodmap);
+    void update(Force &force,
+            Velocity &velocity,
+            Mass &mass,
+            double masscut,
+            double timestep,
+            int nvertices,
+            int dim,
+            vector< vector<int> > &el2nodmap);
 
-	void update(Pressure &pressure,
-	            ArtificialViscosity & q,
-	            Mass &mass,
-	            Velocity &velocity,
-	            double timestep);
+    void update(Pressure &pressure,
+            ArtificialViscosity & q,
+            Mass &mass,
+            Velocity &velocity,
+            double timestep);
 
-	void print();
+    void print();
 
 };
 
@@ -53,23 +53,23 @@ Energy::Energy() {
  * @param el2nodmap - map element number to node number
  */
 void Energy::update(Force &force,
-                    Velocity &velocity,
-                    Mass &mass,
-                    double masscut,
-                    double timestep,
-                    int nvertices,
-                    int dim,
-                    vector< vector<int> > &el2nodmap)
+        Velocity &velocity,
+        Mass &mass,
+        double masscut,
+        double timestep,
+        int nvertices,
+        int dim,
+        vector< vector<int> > &el2nodmap)
 {
-	for (int el= 0; el < data.size(); el++) {
-		for (int v = 0; v < nvertices; v++) {
+    for (int el= 0; el < data.size(); el++) {
+        for (int v = 0; v < nvertices; v++) {
 
-			int node = el2nodmap[el][v];
-			double m = max(mass.get(el), masscut);
+            int node = el2nodmap[el][v];
+            double m = max(mass.get(el), masscut);
 
-			data[el] += -(force.get(node,dim) * velocity.get(node,dim)) * timestep / m;
-		}
-	}
+            data[el] += -(force.get(node,dim) * velocity.get(node,dim)) * timestep / m;
+        }
+    }
 
 }
 
@@ -77,15 +77,20 @@ void Energy::update(Force &force,
  * Updates energy using standard PDV method
  */
 void Energy::update(Mesh &mesh,
-                    Pressure &pressure,
-                    ArtificialViscosity & q,
-                    Velocity &velocity,
-                    double timestep) {
+        Pressure &pressure,
+        ArtificialViscosity &q,
+        Velocity &velocity,
+        Mass &mass,
+        double timestep) {
+
+    // find divergence of velocity field
+    divvel = mesh.calcDiv(velocity);
 
     for (int el= 0; el < data.size(); el++) {
-        // find divergence of velocity field
         // add pressure and artificial viscosity
+        double p = pressure.get(el)+q.get(el);
         // update energy by dt*(p+q)*div.v/M
+        data[el] += 0.5*timestep * p * divvel[el]/mass[el];
 
     }
 

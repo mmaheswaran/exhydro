@@ -28,8 +28,8 @@ public:
              Density &density,
              Energy &energy,
              Pressure &pressure,
-             SoundSpeed2 &ccs2,
-             Velocity &velocity);
+             Velocity &velocity,
+             SoundSpeed2 &ccs2);
 
   void halfstep(Mesh &mesh,
                 Density &density,
