@@ -29,8 +29,8 @@ Force::Force() {
 
 /**
  * Updates the force using pressure and area.
- * @param pressure - element centred
- * @param area - nodal area
+ * @param pressure
+ * @param area
  * @param el2nodmap - element number to node number map
  */
 void Force::update(Pressure &pressure,
@@ -42,7 +42,7 @@ void Force::update(Pressure &pressure,
     for (int el= 0; el < pressure.size(); el++) {
         for (int v = 0; v < nvertices; v++) {
             int node = el2nodmap[el][v];
-            data[node][dim] = pressure.get(el) * area[node];
+            data[node][dim] += pressure.get(el) * area[node];
         }
 
     }
