@@ -80,7 +80,7 @@ void Mesh::printNodePos() {
 }
 
 /**
- * Finite element implementation returning area of element - 2D implementation needs templating.
+ * Finite element implementation returning area of element - 2D implementation needs templating?
  * @param element number
  */
 double Mesh::getVolume(int element) {

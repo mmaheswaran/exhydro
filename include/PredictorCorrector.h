@@ -1,10 +1,13 @@
 /*
  * PredictorCorrector.h
  *
+ * Implements a predictor-corrector time solve and an artificial viscosity
+ * for shock management.
+ *
  *  Created on: 3 Feb 2022
  *      Author: maryann
  */
-
+#include <stdlib.h>
 #include "TimeSolver.h"
 #include "Mesh.h"
 #include "Density.h"
@@ -36,8 +39,7 @@ public:
                 Energy &energy,
                 Pressure &pressure,
                 SoundSpeed2 &ccs2,
-                Velocity &velocity,
-                double timestep);
+                Velocity &velocity);
 private:
 
   MonotonicScalar artvisc;

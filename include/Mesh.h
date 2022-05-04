@@ -75,6 +75,8 @@ public:
 
     vector<double> calcDiv(VectorProperty &vp);
 
+    void calcNodalArea();
+
 private:
     Position _nodepositions; //node positions
     vector<int> _region;     //region number of each element

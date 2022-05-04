@@ -11,22 +11,30 @@
 #include <math.h>
 
 void PredictorCorrector::solve(Mesh &mesh,
-                               Density &density,
-                               Energy &energy,
-                               Pressure &pressure,
-                               SoundSpeed2 &ccs2,
-                               Velocity &velocity,
-                               Volume &volume,
-                               Mass &mass) {
+                               Density &eldensity,
+                               Energy &elenergy,
+                               Pressure &elpressure,
+                               SoundSpeed2 &elccs2,
+                               Velocity &ndvelocity,
+                               Volume &elvolume,
+                               Mass &elmass) {
 
     double time = starttime;
 
     while (time < endtime) {
 
         //Predictor half step
-        halfstep(mesh,density,energy,pressure,ccs2,velocity,volume,mass,artvisc,dt/2);
+        halfstep(mesh,eldensity,elenergy,elpressure,elccs2,ndvelocity,elvolume,elmass);
 
-        // Calculate velocity
+
+        // Calculate nodal velocities
+        /**
+         * Calculate acceleration using:
+         *        - Forces on nodes
+         *          - need nodal area
+         *        - Mass at nodes
+         *          - need nodal volume
+         */
 
         // Calculate timestep
 
@@ -44,37 +52,41 @@ void PredictorCorrector::solve(Mesh &mesh,
 }
 
 void PredictorCorrector::halfstep(Mesh &mesh,
-                                  Density &density,
-                                  Energy &energy,
-                                  Pressure &pressure,
-                                  SoundSpeed2 &ccs2,
-                                  Velocity &velocity,
-                                  Volume &volume,
-                                  Mass &mass,
-                                  MonotonicScalar artvisc,
-                                  double timestep) {
+                                  Density &eldensity,
+                                  Energy &elenergy,
+                                  Pressure &elpressure,
+                                  SoundSpeed2 &elccs2,
+                                  Velocity &ndvelocity,
+                                  Volume &elvolume,
+                                  Mass &elmass) {
 
-    // Calculate new mesh coordinates using velocities and timestep
+    // Update new mesh coordinates using velocities and timestep
     for(int d = 0; d < mesh.DIMS; d++) {
-        mesh.updateNodePos(velocity, timestep, d);
+        mesh.updateNodePos(ndvelocity, timestep, d);
     }
 
-    // Calculate element/cell volumes
-    volume.update(mesh);
+    // Update element/cell volumes
+    elvolume.update(mesh);
 
-    // Calculate densities
-    density.update(mass, volume);
+    // Update densities
+    eldensity.update(elmass, elvolume);
 
-    // Calculate energy
-    energy.update(mesh, pressure, artvisc, velocity, mass, timestep);
+    // Smear shocks
+    Pressure shockPressure(elpressure);
+    try {
+        artvisc.smearShocks(shockPressure);
+    } catch (const std::length_error& e) {
+        std::cerr << "Error: unable to smear shock" << std::endl;
+        return EXIT_FAILURE;
+    }
+    // Update energy
+    elenergy.update(mesh, shockPressure, ndvelocity, elmass, timestep);
 
-    // Calculate pressure
-    pressure.update(density, energy);
+    // Update pressure
+    elpressure.update(eldensity, elenergy);
 
-    // Calculate sound speed
-    ccs2.update(energy);
-
-
+    // Update sound speed
+    elccs2.update(elenergy);
 
 }
 
