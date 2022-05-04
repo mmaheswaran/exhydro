@@ -29,7 +29,6 @@ public:
             vector< vector<int> > &el2nodmap);
 
     void update(Pressure &pressure,
-            ArtificialViscosity & q,
             Mass &mass,
             Velocity &velocity,
             double timestep);
@@ -74,11 +73,10 @@ void Energy::update(Force &force,
 }
 
 /**
- * Updates energy using standard PDV method
+ * Updates energy using standard PdV method
  */
 void Energy::update(Mesh &mesh,
         Pressure &pressure,
-        ArtificialViscosity &q,
         Velocity &velocity,
         Mass &mass,
         double timestep) {
@@ -87,10 +85,7 @@ void Energy::update(Mesh &mesh,
     divvel = mesh.calcDiv(velocity);
 
     for (int el= 0; el < data.size(); el++) {
-        // add pressure and artificial viscosity
-        double p = pressure.get(el)+q.get(el);
-        // update energy by dt*(p+q)*div.v/M
-        data[el] += 0.5*timestep * p * divvel[el]/mass[el];
+        data[el] += 0.5*timestep * pressure.get(el) * divvel[el]/mass.get(el);
 
     }
 
