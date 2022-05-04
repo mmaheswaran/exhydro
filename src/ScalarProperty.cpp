@@ -10,6 +10,16 @@
 #include "ScalarProperty.h"
 
 /**
+ * Copy constructor
+ */
+ScalarProperty::ScalarProperty(const ScalarProperty &obj) {
+
+    for (int i= 0; i < obj.size(); i++) {
+        data.push_back(obj.get(i));
+    }
+}
+
+/**
  * Initialises data array.  Will re-initialise by clearing any existing elements first.
  * @param size the number of element needed in data array
  * @param initValue the initial value of the data array
@@ -87,16 +97,6 @@ void ScalarProperty::add(double value) {
     data.push_back(value);
 }
 
-/**
- * Returns size of data structure.
- *
- */
-int ScalarProperty::size() {
-
-    return data.size();
-
-}
-
 
 /**
  * Print the contents of array.
@@ -112,6 +112,5 @@ void ScalarProperty::print() {
     cout << "\n";
 
 }
-
 
 

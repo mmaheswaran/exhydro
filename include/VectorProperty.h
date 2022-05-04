@@ -47,7 +47,7 @@ public:
 
     void add(vector<double> values);
 
-    int size();
+    int * size();
 
 
 protected:

@@ -19,6 +19,7 @@ class ScalarProperty {
 
 public:
 
+    ScalarProperty::ScalarProperty(const ScalarProperty &obj);
 	virtual ~ScalarProperty() {}
 	void init(int size, double initValue);
 
@@ -37,7 +38,8 @@ public:
 	void add(vector<double> values);
 	void add(double value);
 
-	int size();
+	int size() {return data.size()};
+
 
 protected:
 

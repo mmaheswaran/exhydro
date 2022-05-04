@@ -128,9 +128,12 @@ void VectorProperty::add(vector<double> values){
 /**
  * Returm size of data array
  */
-int VectorProperty::size(){
+int * VectorProperty::size(){
 
-    return data.size();
+    int sizes[2];
+    sizes[0] = data.size();
+    sizes[1] = data[0].size();
+    return sizes;
 
 }
 
