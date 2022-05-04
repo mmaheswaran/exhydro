@@ -6,6 +6,8 @@
  */
 
 #include <vector>
+#include <stdexcept>
+#include "Pressure.h"
 using namespace std;
 
 #ifndef ARTIFICIALVISCOSITY_H_
@@ -19,6 +21,8 @@ public:
 	double get(int index);
 	void set(int index, double value);
 	void add(double value);
+
+	void smearShocks(Pressure &pressure);
 
 	int size();
 	void print();
@@ -55,6 +59,21 @@ void ArtificialViscosity::set(int index, double value) {
 int ArtificialViscosity::size() {
 
 	return artificialVisc.size();
+
+}
+
+/**
+ * Add artificial viscosity
+ */
+void smearShocks(Pressure &pressure) {
+
+    if(pressure.size() != artificialVisc.size()) {
+        throw std::length_error( "Artifical viscosity and pressure data different sizes!" );
+    }
+    for(int i=0; i < pressure.size(); i++) {
+        artificialVisc
+    }
+
 
 }
 
