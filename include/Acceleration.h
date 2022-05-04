@@ -20,7 +20,7 @@ public:
 
     Acceleration();
 	void update(Force &force,
-	            Mass &nodalmass,
+	            Mass &mass,
 	            vector<double> &area,
                 int dim,
 	            double densitycut);
@@ -35,17 +35,24 @@ Acceleration::Acceleration() {
 /**
  * Updates the acceleration arrays.
  * @param force
- * @param nodalmass at cell corners
+ * @param mass
+ * @param area
+ * @param dimension to update
+ * @param density cut-off
  */
 void Acceleration::update(Force &force,
-						  Mass &nodalmass,
+						  Mass &mass,
 						  vector<double> &area,
-                          int dim,
 						  double densitycut) {
 
-	for (int n= 0; n < data.size(); n++) {
-		double minmass = densitycut * area(n);
-		data[n] = nodalmass[n] > minmass ? force[n] / nodalmass[n] : 0.0;
+    int size[2] = force.size();
+    int n = size[0];
+    int DIMS = size[1];
+	for (int i= 0; i < n; i++) {
+		double minmass = densitycut * area(i);
+		for (int d = 0; d < DIMS; d++) {
+		    data[i][d] = mass.get(i) > minmass ? force.get(i,d) / mass.get(i) : 0.0;
+		}
 	}
 }
 
