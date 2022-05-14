@@ -98,6 +98,12 @@ void ScalarProperty::add(double value) {
 }
 
 
+void ScalarProperty::addTo(int index, double value) {
+    assert(data.size() < index+1 && "ERROR: Tried to add to existing data, but no entry exists.");
+    data[index] += value;
+}
+
+
 /**
  * Print the contents of array.
  *

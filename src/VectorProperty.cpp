@@ -5,6 +5,7 @@
  *      Author: maryann
  */
 
+#include <cassert>
 #include <iostream>
 #include "VectorProperty.h"
 
@@ -103,6 +104,16 @@ void VectorProperty::set(const int index, const int dim, const double value) {
 
 }
 
+/**
+ * Add to already existing value.
+ * @param index
+ * @param value
+ */
+void VectorProperty::addTo(const int index, const int dim, const double value) {
+    assert(data.size() < index+1 && "ERROR: Tried to add to existing data, but no entry exists.");
+    data[index][dim] += value;
+
+}
 
 /**
  * Set name of variable

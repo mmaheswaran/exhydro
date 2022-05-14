@@ -8,6 +8,7 @@
  *      Author: Mary-Ann Maheswaran
  */
 
+#include <cassert>
 #include <vector>
 #include <string>
 using namespace std;
@@ -37,6 +38,7 @@ public:
 	void set(int index, double value);
 	void add(vector<double> values);
 	void add(double value);
+	void addTo(int index, double value);
 
 	int size() {return data.size()};
 

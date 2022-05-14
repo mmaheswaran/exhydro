@@ -75,7 +75,8 @@ public:
 
     vector<double> calcDiv(VectorProperty &vp);
 
-    void calcNodalArea();
+    vector<double> calcNodalArea(int element, int node);
+    double calcNodalVolume(int element, int node);
 
 private:
     Position _nodepositions; //node positions

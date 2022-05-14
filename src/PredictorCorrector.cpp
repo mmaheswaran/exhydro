@@ -21,6 +21,7 @@ void PredictorCorrector::solve(Mesh &mesh,
 
     double time = starttime;
 
+
     while (time < endtime) {
 
         //Predictor half step
@@ -28,13 +29,7 @@ void PredictorCorrector::solve(Mesh &mesh,
 
 
         // Calculate nodal velocities
-        /**
-         * Calculate acceleration using:
-         *        - Forces on nodes
-         *          - need nodal area
-         *        - Mass at nodes
-         *          - need nodal volume
-         */
+
 
         // Calculate timestep
 
@@ -87,6 +82,50 @@ void PredictorCorrector::halfstep(Mesh &mesh,
 
     // Update sound speed
     elccs2.update(elenergy);
+
+}
+
+void PredictorCorrector::calcNodalVelocity(Velocity &ndvelocity,
+                                           Mesh &mesh,
+                                           Pressure &elpressure,
+                                           Density &eldensity) {
+    /**
+            * Calculate acceleration using:
+            *        - Forces on nodes
+            *          - need nodal area
+            *        - Mass at nodes
+            *          - need nodal volume
+            */
+    Force ndforce;
+    Acceleration ndaccel;
+    Mass ndmass;
+
+    ndforce.init(mesh.numberNodes, mesh.DIMS, 0.0);
+    ndmass.init(mesh.numberNodes, 0.0);
+
+    //Calculate area which force is acting (vector) and nodal mass
+    for(int e = 0; e < mesh.numberElements; e++) {
+        for(int n = 0; n < mesh.noVertices; n++) {
+            //get nodal vector area Force = Pressure x Area
+            for(int d = 0; d < mesh.DIMS; d++) {
+                vector<double> areavector = mesh.calcNodalArea(e,n);
+                ndforce.addTo(n, d, areavector[d]*elpressure.get(e));
+            }
+            double nodalvolume = mesh.calcNodalVolume(e,n);
+            ndmass.addTo(n, nodalvolume*eldensity.get(e));
+        }
+    }
+
+    //Calcuate acceleration
+    for(int n = 0; n < mesh.noVertices; n++) {
+        vector<double> accel;
+        double m = ndmass.get(n);
+        for(int d = 0; d < mesh.DIMS; d++) {
+            double f = ndforce.get(n,d);
+            accel.push_back(f/m);
+        }
+        ndaccel.add(accel);
+    }
 
 }
 

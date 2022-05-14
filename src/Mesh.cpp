@@ -239,3 +239,18 @@ vector<double> Mesh::calcDiv(VectorProperty &vp) {
 
 }
 
+/**
+ * Calculate the area assigned to a specific node, within
+ * a specific element
+ */
+vector<double> calcNodalArea(int element, int node) {
+
+}
+
+/**
+ * Calculate the volume of a node, within a specific element
+ */
+double calcNodalVolume(int element, int node) {
+
+}
+

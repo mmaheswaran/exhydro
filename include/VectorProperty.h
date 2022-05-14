@@ -37,8 +37,9 @@ public:
 
     vector<double>& get(int index) {return data[index];} //get
     double get(int index, int dimension);
-
     void set(const int index, const int dim, const double value); //set
+
+    void addTo(const int index, const int dim, const double value);
 
     const string& getName() const {return name; }
     void setName(string newName);

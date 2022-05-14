@@ -5,7 +5,6 @@
  *      Author: Mary-Ann Maheswaran
  */
 
-#include <cassert>
 
 #include "ScalarProperty.h"
 #include "Mesh.h"

@@ -1,7 +1,7 @@
 /*
  * Force.h
  *
- * Class to manage the A. Barlow's compatible hydro force array.
+ * Class to manage force array.
  *
  *  Created on: 12 Apr 2021
  *      Author: Mary-Ann Maheswaran
