@@ -65,13 +65,13 @@ int ArtificialViscosity::size() {
 /**
  * Add artificial viscosity
  */
-void smearShocks(Pressure &pressure) {
+void dampenShock(Pressure &pressure) {
 
     if(pressure.size() != artificialVisc.size()) {
         throw std::length_error( "Artifical viscosity and pressure data different sizes!" );
     }
     for(int i=0; i < pressure.size(); i++) {
-        artificialVisc
+        pressure.addTo(i,artificialVisc[i]);
     }
 
 
