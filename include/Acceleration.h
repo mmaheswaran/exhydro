@@ -20,10 +20,7 @@ public:
 
     Acceleration();
 	void update(Force &force,
-	            Mass &mass,
-	            vector<double> &area,
-                int dim,
-	            double densitycut);
+	            Mass &mass);
 	void print();
 
 };
@@ -36,22 +33,15 @@ Acceleration::Acceleration() {
  * Updates the acceleration arrays.
  * @param force
  * @param mass
- * @param area
- * @param dimension to update
- * @param density cut-off
  */
-void Acceleration::update(Force &force,
-						  Mass &mass,
-						  vector<double> &area,
-						  double densitycut) {
+void Acceleration::update(Force &force, Mass &mass) {
 
     int size[2] = force.size();
     int n = size[0];
     int DIMS = size[1];
 	for (int i= 0; i < n; i++) {
-		double minmass = densitycut * area(i);
 		for (int d = 0; d < DIMS; d++) {
-		    data[i][d] = mass.get(i) > minmass ? force.get(i,d) / mass.get(i) : 0.0;
+		    data[i][d] = mass.get(i) > 0.0 ? force.get(i,d) / mass.get(i) : 0.0;
 		}
 	}
 }
@@ -59,3 +49,4 @@ void Acceleration::update(Force &force,
 
 
 #endif /* ACCELERATION_H_ */
+
