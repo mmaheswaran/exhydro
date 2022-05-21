@@ -29,9 +29,10 @@ void PredictorCorrector::solve(Mesh &mesh,
 
 
         // Calculate nodal velocities
+        calcNodalVelocity(ndvelocity,mesh,elpressure,eldensity);
 
 
-        // Calculate timestep
+        // Calculate timestep - CFL condition
 
         //Corrector half step
 
@@ -46,6 +47,9 @@ void PredictorCorrector::solve(Mesh &mesh,
 
 }
 
+/**
+ * Half-step in time solver
+ */
 void PredictorCorrector::halfstep(Mesh &mesh,
                                   Density &eldensity,
                                   Energy &elenergy,
@@ -57,7 +61,7 @@ void PredictorCorrector::halfstep(Mesh &mesh,
 
     // Update new mesh coordinates using velocities and timestep
     for(int d = 0; d < mesh.DIMS; d++) {
-        mesh.updateNodePos(ndvelocity, timestep, d);
+        mesh.updateNodePos(ndvelocity, dt/2, d);
     }
 
     // Update element/cell volumes
@@ -69,13 +73,13 @@ void PredictorCorrector::halfstep(Mesh &mesh,
     // Smear shocks
     Pressure shockPressure(elpressure);
     try {
-        artvisc.smearShocks(shockPressure);
+        artvisc.dampenShock(shockPressure);
     } catch (const std::length_error& e) {
         std::cerr << "Error: unable to smear shock" << std::endl;
         return EXIT_FAILURE;
     }
     // Update energy
-    elenergy.update(mesh, shockPressure, ndvelocity, elmass, timestep);
+    elenergy.update(mesh, shockPressure, ndvelocity, elmass, dt/2);
 
     // Update pressure
     elpressure.update(eldensity, elenergy);
@@ -85,47 +89,56 @@ void PredictorCorrector::halfstep(Mesh &mesh,
 
 }
 
+/**
+ * Calculate nodal velocities
+ * @ndvelocity nodal velocity output
+ * @mesh
+ * @elpressure element-centred pressure
+ * @dt timestep
+ */
 void PredictorCorrector::calcNodalVelocity(Velocity &ndvelocity,
                                            Mesh &mesh,
                                            Pressure &elpressure,
                                            Density &eldensity) {
     /**
-            * Calculate acceleration using:
-            *        - Forces on nodes
-            *          - need nodal area
-            *        - Mass at nodes
-            *          - need nodal volume
-            */
+     * Calculate acceleration using:
+     * - Forces on nodes
+     *  - need nodal area
+     * - Mass at nodes
+     *  - need nodal volume
+     */
     Force ndforce;
     Acceleration ndaccel;
     Mass ndmass;
+    Volume ndvolume;
+
+    double densitycut=1.0e-6;
 
     ndforce.init(mesh.numberNodes, mesh.DIMS, 0.0);
     ndmass.init(mesh.numberNodes, 0.0);
 
-    //Calculate area which force is acting (vector) and nodal mass
+
+    //Calculate nodal force
+    //Calculate nodal mass
     for(int e = 0; e < mesh.numberElements; e++) {
         for(int n = 0; n < mesh.noVertices; n++) {
             //get nodal vector area Force = Pressure x Area
             for(int d = 0; d < mesh.DIMS; d++) {
-                vector<double> areavector = mesh.calcNodalArea(e,n);
+                vector<double> areavector = mesh.calc_nodal_area(e,n);
                 ndforce.addTo(n, d, areavector[d]*elpressure.get(e));
             }
-            double nodalvolume = mesh.calcNodalVolume(e,n);
-            ndmass.addTo(n, nodalvolume*eldensity.get(e));
+            double volume = mesh.calc_nodal_volume(e,n);
+            ndvolume.add(volume);
+            ndmass.addTo(n, volume*eldensity.get(e));
         }
     }
 
-    //Calcuate acceleration
-    for(int n = 0; n < mesh.noVertices; n++) {
-        vector<double> accel;
-        double m = ndmass.get(n);
-        for(int d = 0; d < mesh.DIMS; d++) {
-            double f = ndforce.get(n,d);
-            accel.push_back(f/m);
-        }
-        ndaccel.add(accel);
-    }
+    //update acceleration
+    ndmass.apply_cut_off(ndvolume, densitycut);
+    ndaccel.update(ndforce, ndmass);
+
+    //update velocity
+    ndvelocity.update(ndaccel, dt/2, mesh.DIMS);
 
 }
 

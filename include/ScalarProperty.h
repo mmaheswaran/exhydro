@@ -43,6 +43,7 @@ public:
 	int size() {return data.size()};
 
 
+
 protected:
 
 	vector<double> data;

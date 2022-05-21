@@ -119,4 +119,16 @@ void ScalarProperty::print() {
 
 }
 
+/**
+ * Apply a cut off value to the data.
+ * Set to 0 if below cut off
+ * @param cutoff
+ */
+void applyCutOff(double cutoff) {
+    for (int i= 0; i < data.size(); i++) {
+        data[i] = data[i] > cutoff ? data[i] : 0.0;
+    }
+
+}
+
 

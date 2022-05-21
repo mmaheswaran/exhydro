@@ -85,6 +85,7 @@ void Energy::update(Mesh &mesh,
     divvel = mesh.calcDiv(velocity);
 
     for (int el= 0; el < data.size(); el++) {
+        assert(mass.get(el) > 0 && "ERROR: mass 0 or negative.");
         data[el] += 0.5*timestep * pressure.get(el) * divvel[el]/mass.get(el);
 
     }

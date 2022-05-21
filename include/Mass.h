@@ -19,7 +19,7 @@ public:
 
     Mass();
 	void update(Density &density, Volume &volume);
-	void print();
+	void apply_cut_off(Volume &volume, double densitycut);
 
 };
 
@@ -39,6 +39,19 @@ void Mass::update(Density &density, Volume &volume) {
 	}
 }
 
+/**
+ * Apply cutoff to mass, using minimum density cutoff.
+ * @param volume around mass centres
+ * @param densitycut density cut off limit
+ */
+void Mass::apply_cut_off(Volume &volume, double densitycut) {
+
+    for (int i= 0; i < data.size(); i++) {
+
+        double minmass = densitycut * volume.get(i);
+        data[i] = data[i] > minmass ? data[i]  : 0.0;
+    }
+}
 
 
 #endif /* MASS_H_ */
