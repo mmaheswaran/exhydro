@@ -15,14 +15,14 @@ class Isoparametrics {
 
 public:
 
-  double getPos(vector<double> &nodesPos, double xi);
-  double getPos(vector<double> &nodesPos, double xi, double eta);
-  double getPos(vector<double> &nodesPos, double xi, double eta, double zeta);
+  double get_pos(vector<double> &nodesPos, double xi);
+  double get_pos(vector<double> &nodesPos, double xi, double eta);
+  double get_pos(vector<double> &nodesPos, double xi, double eta, double zeta);
   //vector<double> getJacobian(vector<double> &nodesPos, double xi, double eta);
 
   void Jacobian(double J[4], double* x, double* y, double xi, double eta);
   double detJ(double* x, double* y, double xi, double eta);
-  void getArea(double* x, double* y);
+  void get_area(double* x, double* y);
   void intPartialDerivative(double result[8],double* x, double* y);
 
 

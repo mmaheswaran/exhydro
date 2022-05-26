@@ -46,15 +46,15 @@ public:
 
     double region(int index) {return _region[index];} //get
     void region(const int element, const int value);  //set
-    const vector<int>& getRegionData() const { return _region; }
+    const vector<int>& get_region_data() const { return _region; }
 
-    vector<double>& nodePositions(int index) {return _nodepositions.get(index);} //get
-    void nodePositions(const int node, const int dim, const double value){_nodepositions.set(node,dim,value);} //set
-    void updateNodePos(Velocity &nodevelocity, double timestep, int dim);
+    vector<double>& node_positions(int index) {return _nodepositions.get(index);} //get
+    void node_positions(const int node, const int dim, const double value){_nodepositions.set(node,dim,value);} //set
+    void update_node_pos(Velocity &nodevelocity, double timestep, int dim);
 
     // setup boundary conditions
     // values at boundaries in each dimension
-    void initVelBC(vector<double> xmin,
+    void init_vel_bc(vector<double> xmin,
                    vector<double> xmax,
                    vector<double> valatxmin,
                    vector<double> valatxmax);
@@ -65,15 +65,15 @@ public:
                     vector<double> valatxmax,
                     vector<unordered_map<int, double> > &elemBC);*/
 
-    void printNodePos();				//printNodePos node positions
+    void print_node_pos();				//printNodePos node positions
 
-    void addRegion(int noElements, double extent, double origin, int regionNumber);           //1D
-    void addRegion(int noElements[2], double extents[2], double origin[2], int regionNumber); //2D
+    void add_region(int noElements, double extent, double origin, int regionNumber);           //1D
+    void add_region(int noElements[2], double extents[2], double origin[2], int regionNumber); //2D
     //void addRegion(int noElements[3], double extents[3], double origin[3], int regionNumber); //3D
 
-    double getVolume(int index);
+    double get_volume(int index);
 
-    vector<double> calcDiv(VectorProperty &vp);
+    vector<double> calc_div(VectorProperty &vp);
 
     vector<double> calc_nodal_area(int element, int node, vector<double> area);
     double calc_nodal_volume(int element, int node);
@@ -87,8 +87,8 @@ private:
     vector<unordered_map<int, double> > velBC;
    // vector<unordered_map<int, double> > pressBC;
    // vector<unordered_map<int, double> > energyBC;
-    void findMeshLims();
-    void initNodeBC(vector<double> xmin,
+    void mesh_lims();
+    void init_node_bc(vector<double> xmin,
                     vector<double> xmax,
                     vector<double> valatxmin,
                     vector<double> valatxmax,

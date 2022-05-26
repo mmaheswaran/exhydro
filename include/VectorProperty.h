@@ -21,7 +21,7 @@ public:
     /**
      * Set initial value for a region.  Assign same value to all dimensions.
      */
-    void setRegion(vector<int> regionInfo,
+    void set_region(vector<int> regionInfo,
                    int region,
                    vector<vector<int> > el2nodemap,
                    double initValue);
@@ -29,7 +29,7 @@ public:
     /**
      * Set initial value of a dimension for a region.  Assign specific value to one dimension.
      */
-    void setRegion(vector<int> regionInfo,
+    void set_region(vector<int> regionInfo,
                    int region,
                    vector<vector<int> > el2nodemap,
                    int dimension,
@@ -39,10 +39,10 @@ public:
     double get(int index, int dimension);
     void set(const int index, const int dim, const double value); //set
 
-    void addTo(const int index, const int dim, const double value);
+    void addto(const int index, const int dim, const double value);
 
-    const string& getName() const {return name; }
-    void setName(string newName);
+    const string& get_name() const {return name; }
+    void set_name(string newName);
 
     void print();
 

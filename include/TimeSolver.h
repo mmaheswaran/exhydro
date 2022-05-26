@@ -14,13 +14,14 @@ public:
   virtual ~TimeSolver() {}
   void init(double initdt, int initstep, double st, double et);
 
-  const int& getStep() const {return step; }
-  void setStep(int newstep);
-  virtual void updateStep() = 0;
+  void set_timestep(int newtimestep);
+  void set_step(int newstep);
 
-  const double& getTimeStep() const {return dt; }
-  void setTimeStep(int newtimestep);
-  virtual void updateTimeStep() = 0;
+  const int& get_step() const {return step; }
+  const double& get_timestep() const {return dt; }
+
+  virtual void update_step() = 0;
+  virtual void update_timestep() = 0;
 
 protected:
 

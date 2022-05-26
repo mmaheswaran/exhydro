@@ -29,7 +29,7 @@ void ScalarProperty::init(int size, double initValue) {
     data.resize(size, initValue);
 }
 
-void ScalarProperty::setRegion(vector<int> regionInfo, int region, double initValue) {
+void ScalarProperty::set_region(vector<int> regionInfo, int region, double initValue) {
 
     for (int i= 0; i < data.size(); i++) {
         if (regionInfo[i] == region) {
@@ -98,7 +98,7 @@ void ScalarProperty::add(double value) {
 }
 
 
-void ScalarProperty::addTo(int index, double value) {
+void ScalarProperty::addto(int index, double value) {
     assert(data.size() < index+1 && "ERROR: Tried to add to existing data, but no entry exists.");
     data[index] += value;
 }

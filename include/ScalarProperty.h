@@ -24,21 +24,22 @@ public:
 	virtual ~ScalarProperty() {}
 	void init(int size, double initValue);
 
-	void setRegion(vector<int> regionInfo, int region,double initValue);
+	void set_region(vector<int> regionInfo, int region,double initValue);
 
-	const vector<double>& getData() const { return data; }
-    void setData(vector<double> values);
+	const vector<double>& get_data() const { return data; }
+    void set_data(vector<double> values);
 
-    const string& getName() const {return name; }
-    void setName(string newName);
+    const string& get_name() const {return name; }
+    void set_name(string newName);
 
 	void print();
 
 	double get(int index);
 	void set(int index, double value);
+
 	void add(vector<double> values);
 	void add(double value);
-	void addTo(int index, double value);
+	void addto(int index, double value);
 
 	int size() {return data.size()};
 

@@ -40,20 +40,20 @@ void Mesh::region(const int element, const int value) {
     _region[element] = value;
 }
 
-void Mesh::updateNodePos(Velocity &nodevelocity, double timestep, int dim) {
+void Mesh::update_node_pos(Velocity &nodevelocity, double timestep, int dim) {
 
     _nodepositions.update(nodevelocity, timestep, dim);
 }
 
-void Mesh::initVelBC(vector<double> xmin,
+void Mesh::init_vel_bc(vector<double> xmin,
                      vector<double> xmax,
                      vector<double> valatxmin,
                      vector<double> valatxmax) {
 
-    this.initNodeBC(xmin,xmax,valatxmin,valatxmax,velBC);
+    this.init_node_bc(xmin,xmax,valatxmin,valatxmax,velBC);
 }
 
-void Mesh::initNodeBC(vector<double> xmin,
+void Mesh::init_node_bc(vector<double> xmin,
                      vector<double> xmax,
                      vector<double> valatxmin,
                      vector<double> valatxmax,
@@ -74,7 +74,7 @@ void Mesh::initNodeBC(vector<double> xmin,
     }
 }
 
-void Mesh::printNodePos() {
+void Mesh::print_node_pos() {
 
     _nodepositions.print();
 }
@@ -83,7 +83,7 @@ void Mesh::printNodePos() {
  * Finite element implementation returning area of element - 2D implementation needs templating?
  * @param element number
  */
-double Mesh::getVolume(int element) {
+double Mesh::get_volume(int element) {
 
     vector<int> nodes = el2nodemap[element];
     double x[noVertices];
@@ -105,7 +105,7 @@ double Mesh::getVolume(int element) {
  * @param extents physical size of region
  * @param origin of region
  */
-void Mesh::addRegion(int noElements, double extent, double origin,
+void Mesh::add_region(int noElements, double extent, double origin,
         int regionNumber) {
 
     double dx = extent / noElements; //spacing
@@ -129,7 +129,7 @@ void Mesh::addRegion(int noElements, double extent, double origin,
 /**
  * 2D overloaded implementation of add a region to the mesh
  */
-void Mesh::addRegion(int noElements[2], double extents[2], double origin[2], int regionNumber) {
+void Mesh::add_region(int noElements[2], double extents[2], double origin[2], int regionNumber) {
 
     double dx = extents[0] / noElements[0];
     double dy = extents[1] / noElements[1];
@@ -206,7 +206,7 @@ void Mesh::addRegion(int noElements[2], double extents[2], double origin[2], int
  * Return divergence of a property per element
  * @param VectorProperty vector property you need to calculate divergence for
  */
-vector<double> Mesh::calcDiv(VectorProperty &vp) {
+vector<double> Mesh::calc_div(VectorProperty &vp) {
 
     //get integral of partial derivative shape functions
     //*** need to generalise this divergence calculation routine **

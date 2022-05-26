@@ -109,7 +109,7 @@ void VectorProperty::set(const int index, const int dim, const double value) {
  * @param index
  * @param value
  */
-void VectorProperty::addTo(const int index, const int dim, const double value) {
+void VectorProperty::addto(const int index, const int dim, const double value) {
     assert(data.size() < index+1 && "ERROR: Tried to add to existing data, but no entry exists.");
     data[index][dim] += value;
 
@@ -119,7 +119,7 @@ void VectorProperty::addTo(const int index, const int dim, const double value) {
  * Set name of variable
  * @param newName
  */
-void VectorProperty::setName(string newName) {
+void VectorProperty::set_name(string newName) {
 
     name = newName;
 }

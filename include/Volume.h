@@ -32,7 +32,7 @@ void Volume::update(Mesh &mesh) {
 
 	for (int i= 0; i < data.size(); i++) {
 
-		double volume = mesh.getVolume(i);
+		double volume = mesh.get_volume(i);
 
 		assert(volume > 0 && "ERROR: volume 0 or negative.");
 		data[i] = volume;

@@ -22,7 +22,7 @@ public:
 	void set(int index, double value);
 	void add(double value);
 
-	void smearShocks(Pressure &pressure);
+	void dampen_shocks(Pressure &pressure);
 
 	int size();
 	void print();
@@ -65,13 +65,13 @@ int ArtificialViscosity::size() {
 /**
  * Add artificial viscosity
  */
-void dampenShock(Pressure &pressure) {
+void dampen_shocks(Pressure &pressure) {
 
     if(pressure.size() != artificialVisc.size()) {
         throw std::length_error( "Artifical viscosity and pressure data different sizes!" );
     }
     for(int i=0; i < pressure.size(); i++) {
-        pressure.addTo(i,artificialVisc[i]);
+        pressure.addto(i, artificialVisc[i]);
     }
 
 

@@ -61,7 +61,7 @@ void PredictorCorrector::halfstep(Mesh &mesh,
 
     // Update new mesh coordinates using velocities and timestep
     for(int d = 0; d < mesh.DIMS; d++) {
-        mesh.updateNodePos(ndvelocity, dt/2, d);
+        mesh.update_node_pos(ndvelocity, dt/2, d);
     }
 
     // Update element/cell volumes
@@ -73,7 +73,7 @@ void PredictorCorrector::halfstep(Mesh &mesh,
     // Smear shocks
     Pressure shockPressure(elpressure);
     try {
-        artvisc.dampenShock(shockPressure);
+        artvisc.dampen_shocks(shockPressure);
     } catch (const std::length_error& e) {
         std::cerr << "Error: unable to smear shock" << std::endl;
         return EXIT_FAILURE;
@@ -122,14 +122,14 @@ void PredictorCorrector::calcNodalVelocity(Velocity &ndvelocity,
     //Calculate nodal mass
     for(int e = 0; e < mesh.numberElements; e++) {
         for(int n = 0; n < mesh.noVertices; n++) {
-            //get nodal vector area Force = Pressure x Area
+            //get nodal vector area (Force = Pressure x Area)
             for(int d = 0; d < mesh.DIMS; d++) {
                 vector<double> areavector = mesh.calc_nodal_area(e,n);
-                ndforce.addTo(n, d, areavector[d]*elpressure.get(e));
+                ndforce.addto(n, d, areavector[d]*elpressure.get(e));
             }
             double volume = mesh.calc_nodal_volume(e,n);
             ndvolume.add(volume);
-            ndmass.addTo(n, volume*eldensity.get(e));
+            ndmass.addto(n, volume*eldensity.get(e));
         }
     }
 

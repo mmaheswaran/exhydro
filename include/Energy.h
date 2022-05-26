@@ -82,7 +82,7 @@ void Energy::update(Mesh &mesh,
         double timestep) {
 
     // find divergence of velocity field
-    divvel = mesh.calcDiv(velocity);
+    divvel = mesh.calc_div(velocity);
 
     for (int el= 0; el < data.size(); el++) {
         assert(mass.get(el) > 0 && "ERROR: mass 0 or negative.");
