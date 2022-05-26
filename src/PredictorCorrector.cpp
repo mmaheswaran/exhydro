@@ -29,7 +29,7 @@ void PredictorCorrector::solve(Mesh &mesh,
 
 
         // Calculate nodal velocities
-        calcNodalVelocity(ndvelocity,mesh,elpressure,eldensity);
+        calc_nodal_velocity(ndvelocity,mesh,elpressure,eldensity);
 
 
         // Calculate timestep - CFL condition
@@ -96,7 +96,7 @@ void PredictorCorrector::halfstep(Mesh &mesh,
  * @elpressure element-centred pressure
  * @dt timestep
  */
-void PredictorCorrector::calcNodalVelocity(Velocity &ndvelocity,
+void PredictorCorrector::calc_nodal_velocity(Velocity &ndvelocity,
                                            Mesh &mesh,
                                            Pressure &elpressure,
                                            Density &eldensity) {
@@ -133,12 +133,18 @@ void PredictorCorrector::calcNodalVelocity(Velocity &ndvelocity,
         }
     }
 
-    //update acceleration
+    //update nodal acceleration
     ndmass.apply_cut_off(ndvolume, densitycut);
     ndaccel.update(ndforce, ndmass);
 
-    //update velocity
+    //update nodal velocity
     ndvelocity.update(ndaccel, dt/2, mesh.DIMS);
+
+}
+
+void PredictorCorrector::update_timestep(Mesh &mesh,
+                                         SoundSpeed2 &ccs2,
+                                         Velocity &velocity){
 
 }
 
