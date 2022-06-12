@@ -58,6 +58,8 @@ private:
 
   MonotonicScalar artvisc;
 
+  double safetyfactor; // for timestep growth stability
+
 
 
 };

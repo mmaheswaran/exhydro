@@ -157,28 +157,31 @@ void PredictorCorrector::update_timestep(Mesh &mesh,
     SoundSpeed2 qcorr_ccs2 = elccs2;
     artvisc.correctSoundSpeed2(qcorr_ccs2, density);
 
-    //Find minimum length along cell, which is approximated to be square root
-    //of cell with minimum area
-    double min_length = minimum_length(mesh);
+    double mintimestep = minimum_time(mesh, elccs2);
 
     //Find new timestep using CFL condition
+    dt = safetyfactor*mintimestep;
 
 }
 
 /**
- * Use mesh to approximate the element with minimum length using the square
- * root of the area
+ * Find minimum length along cell, which is approximated to be square root
+ * of cell with minimum area.  Divide this value by sound speed to estimate
+ * minimum timestep.  Approximate minimum length using the square
+ * root of the element area
  */
-double minimum_length(Mesh &mesh) {
+double minimum_time(Mesh &mesh, SoundSpeed2 &elccs2) {
 
-    double minlength = 1e6; //arbitrary large number
+    double minlength = 1e6; //arbitrarily large number
+    double mintime = 0.0;
     for(int e = 0; e < mesh.numberElements; e++) {
         double vol = mesh.get_volume(e);
         minlength = vol < minlength ? vol : minlength;
+        mintime = minlength/elccs2.get(e);
     }
-    assert(minlength > 0 && "ERROR: Minimum element length less than 0.");
+    assert(mintime > 0 && "ERROR: Minimum time step less than 0.");
 
-    return sqrt(minlength);
+    return sqrt(mintime);
 
 }
 
