@@ -21,6 +21,7 @@ public:
 	double get(int index);
 	void set(int index, double value);
 	void add(double value);
+    void correctSoundSpeed2(SoundSpeed2 &ccs2, Density &density);
 
 	void dampen_shocks(Pressure &pressure);
 
@@ -65,13 +66,26 @@ int ArtificialViscosity::size() {
 /**
  * Add artificial viscosity
  */
-void dampen_shocks(Pressure &pressure) {
+void ArtificialViscosity::dampen_shocks(Pressure &pressure) {
 
     if(pressure.size() != artificialVisc.size()) {
         throw std::length_error( "Artifical viscosity and pressure data different sizes!" );
     }
     for(int i=0; i < pressure.size(); i++) {
         pressure.addto(i, artificialVisc[i]);
+    }
+
+
+}
+
+
+/**
+ * Artificial viscosity correction to sound speed
+ */
+void ArtificialViscosity::correctSoundSpeed2(SoundSpeed2 &ccs2, Density &density) {
+
+    for (int i= 0; i < ccs2.size(); i++) {
+        ccs2[i] += 2*artificialVisc[i]/density.get(i);
     }
 
 

@@ -9,6 +9,7 @@
 
 #include "PredictorCorrector.h"
 #include <math.h>
+#include <cassert>
 
 void PredictorCorrector::solve(Mesh &mesh,
                                Density &eldensity,
@@ -142,9 +143,42 @@ void PredictorCorrector::calc_nodal_velocity(Velocity &ndvelocity,
 
 }
 
+/**
+ * Update timestep using Courant-Friendrichs-Lewy (CFL) condition
+ */
 void PredictorCorrector::update_timestep(Mesh &mesh,
-                                         SoundSpeed2 &ccs2,
-                                         Velocity &velocity){
+                                         SoundSpeed2 &elccs2,
+                                         Velocity &ndvelocity,
+                                         Density &density){
+    //update Q
+    artvisc.calculate(mesh,ndvelocity,elccs2,density);
+
+    //calculate sound speed with artificial viscosity correction
+    SoundSpeed2 qcorr_ccs2 = elccs2;
+    artvisc.correctSoundSpeed2(qcorr_ccs2, density);
+
+    //Find minimum length along cell, which is approximated to be square root
+    //of cell with minimum area
+    double min_length = minimum_length(mesh);
+
+    //Find new timestep using CFL condition
+
+}
+
+/**
+ * Use mesh to approximate the element with minimum length using the square
+ * root of the area
+ */
+double minimum_length(Mesh &mesh) {
+
+    double minlength = 1e6; //arbitrary large number
+    for(int e = 0; e < mesh.numberElements; e++) {
+        double vol = mesh.get_volume(e);
+        minlength = vol < minlength ? vol : minlength;
+    }
+    assert(minlength > 0 && "ERROR: Minimum element length less than 0.");
+
+    return sqrt(minlength);
 
 }
 
