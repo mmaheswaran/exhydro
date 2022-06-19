@@ -11,14 +11,15 @@
 #include <math.h>
 #include <cassert>
 
-void PredictorCorrector::solve(Mesh &mesh,
-                               Density &eldensity,
-                               Energy &elenergy,
-                               Pressure &elpressure,
-                               SoundSpeed2 &elccs2,
-                               Velocity &ndvelocity,
-                               Volume &elvolume,
-                               Mass &elmass) {
+void PredictorCorrector::solve(
+        Mesh &mesh,
+        Density &eldensity,
+        Energy &elenergy,
+        Pressure &elpressure,
+        SoundSpeed2 &elccs2,
+        Velocity &ndvelocity,
+        Volume &elvolume,
+        Mass &elmass) {
 
     double time = starttime;
 
@@ -34,13 +35,21 @@ void PredictorCorrector::solve(Mesh &mesh,
 
 
         // Calculate timestep - CFL condition
+        update_timestep(mesh,elccs2,ndvelocity,eldensity);
+
 
         //Corrector half step
+        halfstep(mesh,eldensity,elenergy,elpressure,elccs2,ndvelocity,elvolume,elmass);
 
 
         // Calculate velocity
+        calc_nodal_velocity(ndvelocity,mesh,elpressure,eldensity);
+
 
         // Calculate timestep
+        update_timestep(mesh,elccs2,ndvelocity,eldensity);
+
+
 
         time += dt;
 
@@ -51,14 +60,15 @@ void PredictorCorrector::solve(Mesh &mesh,
 /**
  * Half-step in time solver
  */
-void PredictorCorrector::halfstep(Mesh &mesh,
-                                  Density &eldensity,
-                                  Energy &elenergy,
-                                  Pressure &elpressure,
-                                  SoundSpeed2 &elccs2,
-                                  Velocity &ndvelocity,
-                                  Volume &elvolume,
-                                  Mass &elmass) {
+void PredictorCorrector::halfstep(
+        Mesh &mesh,
+        Density &eldensity,
+        Energy &elenergy,
+        Pressure &elpressure,
+        SoundSpeed2 &elccs2,
+        Velocity &ndvelocity,
+        Volume &elvolume,
+        Mass &elmass) {
 
     // Update new mesh coordinates using velocities and timestep
     for(int d = 0; d < mesh.DIMS; d++) {
@@ -97,10 +107,11 @@ void PredictorCorrector::halfstep(Mesh &mesh,
  * @elpressure element-centred pressure
  * @dt timestep
  */
-void PredictorCorrector::calc_nodal_velocity(Velocity &ndvelocity,
-                                           Mesh &mesh,
-                                           Pressure &elpressure,
-                                           Density &eldensity) {
+void PredictorCorrector::calc_nodal_velocity(
+        Velocity &ndvelocity,
+        Mesh &mesh,
+        Pressure &elpressure,
+        Density &eldensity) {
     /**
      * Calculate acceleration using:
      * - Forces on nodes
@@ -146,16 +157,17 @@ void PredictorCorrector::calc_nodal_velocity(Velocity &ndvelocity,
 /**
  * Update timestep using Courant-Friendrichs-Lewy (CFL) condition
  */
-void PredictorCorrector::update_timestep(Mesh &mesh,
-                                         SoundSpeed2 &elccs2,
-                                         Velocity &ndvelocity,
-                                         Density &density){
+void PredictorCorrector::update_timestep(
+        Mesh &mesh,
+        SoundSpeed2 &elccs2,
+        Velocity &ndvelocity,
+        Density &eldensity){
     //update Q
-    artvisc.calculate(mesh,ndvelocity,elccs2,density);
+    artvisc.calculate(mesh,ndvelocity,elccs2,eldensity);
 
     //calculate sound speed with artificial viscosity correction
     SoundSpeed2 qcorr_ccs2 = elccs2;
-    artvisc.correctSoundSpeed2(qcorr_ccs2, density);
+    artvisc.correctSoundSpeed2(qcorr_ccs2, eldensity);
 
     double mintimestep = minimum_time(mesh, elccs2);
 

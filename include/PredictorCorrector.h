@@ -27,36 +27,41 @@ class PredictorCorrector : public TimeSolver {
 
 public:
 
-  void solve(Mesh &mesh,
-             Density &eldensity,
-             Energy &elenergy,
-             Pressure &elpressure,
-             SoundSpeed2 &elccs2,
-             Velocity &ndvelocity,
-             Volume &elvolume,
-             Mass &elmass);
+    void solve(Mesh &mesh,
+            Density &eldensity,
+            Energy &elenergy,
+            Pressure &elpressure,
+            SoundSpeed2 &elccs2,
+            Velocity &ndvelocity,
+            Volume &elvolume,
+            Mass &elmass);
 
 
 
 private:
 
-  void halfstep(Mesh &mesh,
-                Density &density,
-                Energy &energy,
-                Pressure &pressure,
-                SoundSpeed2 &ccs2,
-                Velocity &velocity);
+    void halfstep(Mesh &mesh,
+            Density &density,
+            Energy &energy,
+            Pressure &pressure,
+            SoundSpeed2 &ccs2,
+            Velocity &velocity);
 
-  void update_timestep(Mesh &mesh,
-                       SoundSpeed2 &ccs2,
-                       Velocity &velocity);
+    void update_timestep(Mesh &mesh,
+            SoundSpeed2 &ccs2,
+            Velocity &velocity);
 
-  void calc_nodal_velocity(Velocity &ndvelocity,
-                           Mesh &mesh,
-                           Pressure &elpressure,
-                           Density &eldensity);
+    void calc_nodal_velocity(Velocity &ndvelocity,
+            Mesh &mesh,
+            Pressure &elpressure,
+            Density &eldensity);
 
-  MonotonicScalar artvisc;
+    void update_timestep(Mesh &mesh,
+            SoundSpeed2 &elccs2,
+            Velocity &ndvelocity,
+            Density &eldensity)
+
+    MonotonicScalar artvisc;
 
   double safetyfactor; // for timestep growth stability
 
