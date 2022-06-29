@@ -26,24 +26,24 @@ void PredictorCorrector::solve(
 
     while (time < endtime) {
 
-        //Predictor half step
+        // Predictor half step
         halfstep(mesh,eldensity,elenergy,elpressure,elccs2,ndvelocity,elvolume,elmass);
 
-
+        Velocity ndvelpredict = ndvelocity;
         // Calculate nodal velocities
-        calc_nodal_velocity(ndvelocity,mesh,elpressure,eldensity);
+        calc_predict_nvel(ndvelpredict,mesh,elpressure,eldensity);
 
 
         // Calculate timestep - CFL condition
-        update_timestep(mesh,elccs2,ndvelocity,eldensity);
+        update_timestep(mesh,elccs2,ndvelpredict,eldensity);
 
 
-        //Corrector half step
+        // Calculate corrected nodal velocity using initial velocity at start of step
+        // and predicted nodal velocity
+        calc_corrected_velocity(ndvelocity,ndvelpredict);
+
+        // Corrector half step
         halfstep(mesh,eldensity,elenergy,elpressure,elccs2,ndvelocity,elvolume,elmass);
-
-
-        // Calculate velocity
-        calc_nodal_velocity(ndvelocity,mesh,elpressure,eldensity);
 
 
         // Calculate timestep
@@ -82,15 +82,15 @@ void PredictorCorrector::halfstep(
     eldensity.update(elmass, elvolume);
 
     // Smear shocks
-    Pressure shockPressure(elpressure);
+    Pressure smearedpress = elpressure;
     try {
-        artvisc.dampen_shocks(shockPressure);
+        artvisc.dampen_shocks(smearedpress);
     } catch (const std::length_error& e) {
         std::cerr << "Error: unable to smear shock" << std::endl;
         return EXIT_FAILURE;
     }
     // Update energy
-    elenergy.update(mesh, shockPressure, ndvelocity, elmass, dt/2);
+    elenergy.update(mesh, smearedpress, ndvelocity, elmass, dt/2);
 
     // Update pressure
     elpressure.update(eldensity, elenergy);
@@ -107,7 +107,7 @@ void PredictorCorrector::halfstep(
  * @elpressure element-centred pressure
  * @dt timestep
  */
-void PredictorCorrector::calc_nodal_velocity(
+void PredictorCorrector::calc_predict_nvel(
         Velocity &ndvelocity,
         Mesh &mesh,
         Pressure &elpressure,
@@ -155,6 +155,16 @@ void PredictorCorrector::calc_nodal_velocity(
 }
 
 /**
+ * Calculate corrected nodal velocity
+ */
+void PredictorCorrector::calc_corrected_velocity(Velocity startvel, Velocity predictvel) {
+
+    for(int n = 0; n < startvel.size(); n++) {
+        startvel.get(n) = 0.5*(startvel.get(n)+predictvel.get(n));
+    }
+}
+
+/**
  * Update timestep using Courant-Friendrichs-Lewy (CFL) condition
  */
 void PredictorCorrector::update_timestep(
@@ -177,12 +187,12 @@ void PredictorCorrector::update_timestep(
 }
 
 /**
- * Find minimum length along cell, which is approximated to be square root
+ * Find minimum length travelled by a shock, which is approximated to be square root
  * of cell with minimum area.  Divide this value by sound speed to estimate
  * minimum timestep.  Approximate minimum length using the square
  * root of the element area
  */
-double minimum_time(Mesh &mesh, SoundSpeed2 &elccs2) {
+double PredictorCorrector::minimum_time(Mesh &mesh, SoundSpeed2 &elccs2) {
 
     double minlength = 1e6; //arbitrarily large number
     double mintime = 0.0;
@@ -196,4 +206,6 @@ double minimum_time(Mesh &mesh, SoundSpeed2 &elccs2) {
     return sqrt(mintime);
 
 }
+
+
 

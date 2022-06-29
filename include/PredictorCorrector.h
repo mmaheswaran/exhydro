@@ -51,7 +51,7 @@ private:
             SoundSpeed2 &ccs2,
             Velocity &velocity);
 
-    void calc_nodal_velocity(Velocity &ndvelocity,
+    void calc_predict_nvel(Velocity &ndvelocity,
             Mesh &mesh,
             Pressure &elpressure,
             Density &eldensity);
@@ -59,7 +59,11 @@ private:
     void update_timestep(Mesh &mesh,
             SoundSpeed2 &elccs2,
             Velocity &ndvelocity,
-            Density &eldensity)
+            Density &eldensity);
+
+    void calc_corrected_velocity(Velocity startvel, Velocity predictvel);
+
+    double minimum_time(Mesh &mesh, SoundSpeed2 &elccs2);
 
     MonotonicScalar artvisc;
 
