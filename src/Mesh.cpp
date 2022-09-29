@@ -217,10 +217,7 @@ vector<double> Mesh::calc_div(VectorProperty &vp) {
 
     for(int i=0; i<numberElements; i++) {
         vector<double> coords = _nodePositions.get(i);
-        for(int j =0; j < noVertices; j++) {
-            x[j]=coords[j][0];
-            y[j]=coords[j][1];
-        }
+        get_node_positions(x,y, coords);
         iso.intPartialDerivative(intpdeshapefunction, *x, *y);
 
         //multiply for each node along each dimension to get divergence in a element
@@ -239,18 +236,59 @@ vector<double> Mesh::calc_div(VectorProperty &vp) {
 
 }
 
-/**
- * Calculate the area assigned to a specific node, within
- * a specific element
- */
-vector<double> calc_nodal_area(int element, int node, vector<double> area) {
 
+void Mesh::calc_nodal_force(Force ndforce, Pressure elpressure) {
+
+    for(int e = 0; e < numberElements; e++) {
+        //get node positions of element
+        vector<double> coords = _nodePositions.get(i);
+        double x[noVertices];
+        double y[noVertices];
+        //put nodal positions in an array to be read by isoparamertric methods.
+        get_node_positions(double &x, double &y, vector<double> &coords);
+        
+        //get nodal vector area (Force = Pressure x Area)
+        double nodal_areas[noVertices][mesh.DIMS];
+        iso.calc_nodal_areas(nodal_areas,*x, *y);
+        for(int v = 0; v < noVertices; v++) {
+            int nodenum = el2nodemap[e][v];
+            for(int d = 0; d < mesh.DIMS; d++) {
+                ndforce.addto(nodenum, d, nodal_areas[v][d]*elpressure.get(e));
+            }
+        }
+    }
 }
 
 /**
- * Calculate the volume of a node, within a specific element
+ * Calculate the mass of a node, within a specific element
  */
-double calc_nodal_volume(int element, int node) {
+void Mesh::calc_nodal_mass(Mass ndmass, Density eldensity) {
+    
+    for(int e = 0; e < numberElements; e++) {
+        //get node positions of element
+        vector<double> coords = _nodePositions.get(i);
+        double x[noVertices];
+        double y[noVertices];
+        //put nodal positions in an array to be read by isoparamertric methods.
+        get_node_positions(double &x, double &y, vector<double> &coords);
 
+        double nodal_volumes[noVertices];
+        iso.calc_nodal_volume(nodal_volumes,x,y);
+        for(int v = 0; v < noVertices; v++) {
+            int nodenum = el2nodemap[e][v];
+            ndmass.addto(nodenum, nodal_volumes[v]*eldensity.get(e));
+        }
+    }
+}
+
+
+/*
+ * Put nodal positions in temporary arrays
+ */
+void Mesh::get_node_positions(double &x, double &y, vector<double> &coords) {
+    for(int v =0; v < noVertices; v++) {
+        x[v]=coords[v][0];
+        y[v]=coords[v][1];
+    }
 }
 

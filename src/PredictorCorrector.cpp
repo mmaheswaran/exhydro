@@ -129,21 +129,9 @@ void PredictorCorrector::calc_predict_nvel(
     ndforce.init(mesh.numberNodes, mesh.DIMS, 0.0);
     ndmass.init(mesh.numberNodes, 0.0);
 
-
-    //Calculate nodal force
-    //Calculate nodal mass
-    for(int e = 0; e < mesh.numberElements; e++) {
-        for(int n = 0; n < mesh.noVertices; n++) {
-            //get nodal vector area (Force = Pressure x Area)
-            for(int d = 0; d < mesh.DIMS; d++) {
-                vector<double> areavector = mesh.calc_nodal_area(e,n);
-                ndforce.addto(n, d, areavector[d]*elpressure.get(e));
-            }
-            double volume = mesh.calc_nodal_volume(e,n);
-            ndvolume.add(volume);
-            ndmass.addto(n, volume*eldensity.get(e));
-        }
-    }
+    //Calculate force acting on a node
+    mesh.calc_nodal_force(ndforce,elpressure);
+    mesh.calc_nodal_mass(ndmass,eldensity);
 
     //update nodal acceleration
     ndmass.apply_cut_off(ndvolume, densitycut);
@@ -187,7 +175,7 @@ void PredictorCorrector::update_timestep(
 }
 
 /**
- * Find minimum length travelled by a shock, which is approximated to be square root
+ * Find minimum time travelled by a shock, which is approximated to be square root
  * of cell with minimum area.  Divide this value by sound speed to estimate
  * minimum timestep.  Approximate minimum length using the square
  * root of the element area
@@ -195,15 +183,20 @@ void PredictorCorrector::update_timestep(
 double PredictorCorrector::minimum_time(Mesh &mesh, SoundSpeed2 &elccs2) {
 
     double minlength = 1e6; //arbitrarily large number
-    double mintime = 0.0;
+    double mintime
+    vector<int> badelements;
     for(int e = 0; e < mesh.numberElements; e++) {
         double vol = mesh.get_volume(e);
-        minlength = vol < minlength ? vol : minlength;
-        mintime = minlength/elccs2.get(e);
+        if(sqrt(vol)<minlength) {
+            minlength = sqrt(vol);
+            mintime = minlength/elccs2.get(e);
+        }
+        string negdterror = "ERROR: Time step less than 0 in element: "+std::to_string(e);
+        assert(mintime > 0 && negdterror);
     }
-    assert(mintime > 0 && "ERROR: Minimum time step less than 0.");
 
-    return sqrt(mintime);
+
+    return mintime;
 
 }
 

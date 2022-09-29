@@ -75,8 +75,8 @@ public:
 
     vector<double> calc_div(VectorProperty &vp);
 
-    vector<double> calc_nodal_area(int element, int node, vector<double> area);
-    double calc_nodal_volume(int element, int node);
+    void calc_nodal_force(Force ndforce, Pressure elpressure);
+    void calc_nodal_mass(Mass ndmass, Density eldensity);
 
 private:
     Position _nodepositions; //node positions
